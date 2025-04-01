@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
-import { SearchIcon, CheckCircle, UserRound, Ruler, Wallet, Road, Gauge, Wrench } from "lucide-react";
+import { SearchIcon, CheckCircle, UserRound, Ruler, Wallet, MapPin, Gauge, Wrench } from "lucide-react";
 
 const SearchForm = () => {
   const [height, setHeight] = useState(170);
@@ -107,7 +106,7 @@ const SearchForm = () => {
                   
                   <div className="space-y-2">
                     <div className="flex items-center">
-                      <Road className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
                       <label className="text-sm font-medium">Tipo de Uso</label>
                     </div>
                     <Select defaultValue="city">
