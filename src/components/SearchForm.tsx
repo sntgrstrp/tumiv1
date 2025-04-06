@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +7,26 @@ import { Slider } from "@/components/ui/slider";
 import { SearchIcon, CheckCircle, UserRound, Ruler, Wallet, MapPin, Gauge, Wrench, Bike } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
+
+// Define an interface for our request data
+interface RequestData {
+  altura?: number;
+  peso?: number;
+  presupuesto?: number;
+  marca?: string;
+  tipo_uso?: string;
+  cilindrada?: number;
+  potencia?: number;
+  tipo_motor?: string;
+  transmision?: string;
+  freno_delantero?: string;
+  freno_trasero?: string;
+  suspension_delantera?: string;
+  suspension_trasera?: string;
+  capacidad_tanque?: number;
+  alto_total?: number;
+  bike_weight?: number; // For the bike's weight to avoid confusion with user weight
+}
 
 const SearchForm = () => {
   const { toast } = useToast();
@@ -48,7 +67,9 @@ const SearchForm = () => {
     
     try {
       // Preparar datos según el modo
-      let requestData = {};
+      let requestData: RequestData = {
+        presupuesto: budget
+      };
       
       if (mode === "basic") {
         requestData = {
@@ -66,10 +87,6 @@ const SearchForm = () => {
         }
       } else {
         // Modo avanzado
-        requestData = {
-          presupuesto: budget
-        };
-        
         // Solo añadir campos con valor
         if (engineCC) requestData.cilindrada = parseInt(engineCC);
         if (power) requestData.potencia = parseInt(power);
@@ -79,7 +96,7 @@ const SearchForm = () => {
         if (rearBrake) requestData.freno_trasero = rearBrake;
         if (frontSuspension) requestData.suspension_delantera = frontSuspension;
         if (rearSuspension) requestData.suspension_trasera = rearSuspension;
-        if (bikeWeight) requestData.peso = parseInt(bikeWeight);
+        if (bikeWeight) requestData.bike_weight = parseInt(bikeWeight);
         if (tankCapacity) requestData.capacidad_tanque = parseFloat(tankCapacity);
         if (totalHeight) requestData.alto_total = parseInt(totalHeight);
       }
