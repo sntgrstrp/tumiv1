@@ -36,6 +36,7 @@ interface RequestData {
   capacidad_tanque?: number;
   alto_total?: number;
   bike_weight?: number; // For the bike's weight to avoid confusion with user weight
+  experience?: string; // Added this to fix TypeScript errors
 }
 
 const InteractiveAssistant = () => {
@@ -51,6 +52,7 @@ const InteractiveAssistant = () => {
     transmision: "",
     tipo_uso: "",
     marca: "",
+    experience: "", // Initialize the experience property
   });
 
   const basicQuestions: AssistantQuestion[] = [
@@ -113,7 +115,7 @@ const InteractiveAssistant = () => {
         { value: "automatica", label: "Automática" },
         { value: "semiautomatica", label: "Semiautomática" },
         { value: "manual", label: "Manual" },
-        { value: "", label: "No tengo preferencia" }
+        { value: "no-preferencia", label: "No tengo preferencia" } // Changed from empty string to "no-preferencia"
       ],
       field: "transmision",
       help: "La transmisión automática es más sencilla de manejar, mientras que la manual te da mayor control sobre la potencia."
@@ -137,7 +139,7 @@ const InteractiveAssistant = () => {
       question: "¿Te interesa un rango específico de cilindrada?",
       type: "select",
       options: [
-        { value: "", label: "No tengo preferencia" },
+        { value: "no-preferencia", label: "No tengo preferencia" }, // Changed from empty string to "no-preferencia"
         { value: "125", label: "Hasta 125cc" },
         { value: "150", label: "126cc - 150cc" },
         { value: "200", label: "151cc - 200cc" },
@@ -156,7 +158,7 @@ const InteractiveAssistant = () => {
       options: [
         { value: "abs", label: "Sí, quiero ABS" },
         { value: "disco", label: "No necesariamente, frenos de disco normales están bien" },
-        { value: "", label: "No tengo preferencia" }
+        { value: "no-preferencia", label: "No tengo preferencia" } // Changed from empty string to "no-preferencia"
       ],
       field: "freno_delantero",
       help: "Los frenos ABS evitan que las ruedas se bloqueen durante una frenada brusca, aumentando la seguridad."
@@ -166,7 +168,7 @@ const InteractiveAssistant = () => {
       question: "¿Qué tipo de suspensión delantera prefieres?",
       type: "select",
       options: [
-        { value: "", label: "No tengo preferencia" },
+        { value: "no-preferencia", label: "No tengo preferencia" }, // Changed from empty string to "no-preferencia"
         { value: "telescopica", label: "Telescópica (estándar)" },
         { value: "invertida", label: "Invertida (mejor rendimiento)" },
         { value: "horquilla", label: "Horquilla" }
@@ -179,7 +181,7 @@ const InteractiveAssistant = () => {
       question: "¿Tienes alguna marca favorita?",
       type: "select",
       options: [
-        { value: "", label: "No tengo preferencia" },
+        { value: "no-preferencia", label: "No tengo preferencia" }, // Changed from empty string to "no-preferencia"
         { value: "Honda", label: "Honda" },
         { value: "Yamaha", label: "Yamaha" },
         { value: "Suzuki", label: "Suzuki" },
@@ -238,11 +240,11 @@ const InteractiveAssistant = () => {
       if (userData.peso) requestData.peso = userData.peso;
       if (userData.presupuesto) requestData.presupuesto = userData.presupuesto;
       if (userData.tipo_uso && userData.tipo_uso !== "cualquiera") requestData.tipo_uso = userData.tipo_uso;
-      if (userData.transmision) requestData.transmision = userData.transmision;
-      if (userData.cilindrada) requestData.cilindrada = parseInt(userData.cilindrada as unknown as string);
-      if (userData.marca) requestData.marca = userData.marca;
-      if (userData.freno_delantero) requestData.freno_delantero = userData.freno_delantero;
-      if (userData.suspension_delantera) requestData.suspension_delantera = userData.suspension_delantera;
+      if (userData.transmision && userData.transmision !== "no-preferencia") requestData.transmision = userData.transmision;
+      if (userData.cilindrada && userData.cilindrada !== "no-preferencia") requestData.cilindrada = parseInt(userData.cilindrada as unknown as string);
+      if (userData.marca && userData.marca !== "no-preferencia") requestData.marca = userData.marca;
+      if (userData.freno_delantero && userData.freno_delantero !== "no-preferencia") requestData.freno_delantero = userData.freno_delantero;
+      if (userData.suspension_delantera && userData.suspension_delantera !== "no-preferencia") requestData.suspension_delantera = userData.suspension_delantera;
       
       console.log("Sending data to API:", requestData);
       
