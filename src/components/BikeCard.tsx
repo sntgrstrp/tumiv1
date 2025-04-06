@@ -1,7 +1,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Bike, ChevronDown, ChevronUp, Zap, ShieldCheck, FuelIcon, Info } from "lucide-react";
+import { Bike, ChevronDown, ChevronUp, Zap, ShieldCheck, FuelIcon, Info, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface BikeCardProps {
   bike: {
@@ -16,15 +17,26 @@ interface BikeCardProps {
       power: string;
       weight: string;
       seat_height: string;
+      engine_type?: string;
+      transmission?: string;
+      front_brake?: string;
+      rear_brake?: string;
+      front_suspension?: string;
+      rear_suspension?: string;
+      tank_capacity?: string;
+      total_height?: string;
+      bike_type?: string;
     };
   };
 }
 
 const BikeCard = ({ bike }: BikeCardProps) => {
-  const [expanded, setExpanded] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
+  const toggleDetails = () => setShowDetails(!showDetails);
 
   return (
-    <div className="glass-card rounded-xl overflow-hidden transition-all hover:translate-y-[-5px] group animate-fade-in">
+    <div className="glass-card rounded-xl overflow-hidden transition-all hover:translate-y-[-5px] group animate-fade-in relative">
       <div className="relative">
         <img 
           src={bike.image} 
@@ -38,6 +50,11 @@ const BikeCard = ({ bike }: BikeCardProps) => {
         <div className="absolute bottom-3 left-3 bg-gradient-to-r from-ubike to-ubike-blue text-white px-3 py-1 rounded-full text-xs font-medium">
           {bike.compatibility}% Match
         </div>
+        {bike.specs.bike_type && (
+          <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
+            {bike.specs.bike_type}
+          </div>
+        )}
       </div>
       
       <div className="p-5">
@@ -47,7 +64,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
             <p className="text-muted-foreground text-sm">{bike.brand}</p>
           </div>
           <div className="text-right">
-            <p className="font-bold text-lg">{bike.price.toLocaleString('es-ES')} €</p>
+            <p className="font-bold text-lg">${bike.price.toLocaleString('es-CO')}</p>
           </div>
         </div>
         
@@ -66,59 +83,116 @@ const BikeCard = ({ bike }: BikeCardProps) => {
           </div>
         </div>
         
-        {expanded && (
-          <div className="mt-4 pt-4 border-t border-white/10 animate-fade-in">
-            <h4 className="font-medium mb-2">Descripción</h4>
-            <p className="text-sm text-muted-foreground mb-4">
-              Una motocicleta perfecta para tus necesidades con un motor potente y confiable. Diseño aerodinámico y ergonómico para mayor comodidad en viajes largos.
-            </p>
-            
-            <h4 className="font-medium mb-2">Puntos Destacados</h4>
-            <ul className="text-sm text-muted-foreground space-y-1 mb-4">
-              <li className="flex items-start gap-2">
-                <div className="min-w-4 mt-0.5">
-                  <Info className="h-3 w-3 text-ubike" />
-                </div>
-                <span>Sistema de frenos ABS de última generación</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="min-w-4 mt-0.5">
-                  <Info className="h-3 w-3 text-ubike" />
-                </div>
-                <span>Suspensión ajustable para diferentes tipos de terreno</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="min-w-4 mt-0.5">
-                  <Info className="h-3 w-3 text-ubike" />
-                </div>
-                <span>Consumo eficiente de combustible para mayor autonomía</span>
-              </li>
-            </ul>
-            
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" className="flex-1">
-                Ver Detalles
-              </Button>
-              <Button className="flex-1 bg-ubike hover:bg-ubike/90">
-                Concesionarios
-              </Button>
-            </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {showDetails && (
+            <motion.div 
+              className="mt-4 pt-4 border-t border-white/10"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h4 className="font-medium mb-2">Especificaciones Técnicas</h4>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-muted-foreground mb-4">
+                {bike.specs.engine_type && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Motor: {bike.specs.engine_type}</span>
+                  </div>
+                )}
+                
+                {bike.specs.transmission && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Transmisión: {bike.specs.transmission}</span>
+                  </div>
+                )}
+                
+                {bike.specs.front_brake && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Freno Del.: {bike.specs.front_brake}</span>
+                  </div>
+                )}
+                
+                {bike.specs.rear_brake && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Freno Tras.: {bike.specs.rear_brake}</span>
+                  </div>
+                )}
+                
+                {bike.specs.front_suspension && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Susp. Del.: {bike.specs.front_suspension}</span>
+                  </div>
+                )}
+                
+                {bike.specs.rear_suspension && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Susp. Tras.: {bike.specs.rear_suspension}</span>
+                  </div>
+                )}
+                
+                {bike.specs.tank_capacity && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Cap. Tanque: {bike.specs.tank_capacity}</span>
+                  </div>
+                )}
+                
+                {bike.specs.total_height && (
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-4 mt-0.5">
+                      <Info className="h-3 w-3 text-ubike" />
+                    </div>
+                    <span>Alto Total: {bike.specs.total_height}</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex justify-center">
+                <Button 
+                  size="sm" 
+                  className="bg-ubike hover:bg-ubike/90 text-white"
+                  onClick={() => window.open(`https://www.google.com/search?q=${bike.brand}+${bike.name}+caracteristicas`, '_blank')}
+                >
+                  Más Información
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         <Button 
           variant="ghost" 
           size="sm" 
           className="w-full mt-4"
-          onClick={() => setExpanded(!expanded)}
+          onClick={toggleDetails}
         >
-          {expanded ? (
+          {showDetails ? (
             <>
-              <ChevronUp className="h-4 w-4 mr-2" /> Ver Menos
+              <ChevronUp className="h-4 w-4 mr-2" /> Ocultar Detalles
             </>
           ) : (
             <>
-              <ChevronDown className="h-4 w-4 mr-2" /> Ver Más
+              <ChevronDown className="h-4 w-4 mr-2" /> Ver Detalles
             </>
           )}
         </Button>
