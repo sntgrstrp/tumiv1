@@ -2,9 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Search } from "lucide-react";
 
-const HeroSection = () => {
-  const scrollToFinder = () => {
-    const element = document.getElementById('finder');
+interface HeroSectionProps {
+  onStartClick: () => void;
+}
+
+const HeroSection = ({ onStartClick }: HeroSectionProps) => {
+  const scrollToHowItWorks = () => {
+    const element = document.getElementById('how-it-works');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -33,15 +37,15 @@ const HeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
               size="lg" 
-              className="bg-ubike hover:bg-ubike/90 text-white"
-              onClick={scrollToFinder}
+              className="bg-ubike hover:bg-ubike/90 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              onClick={onStartClick}
             >
               <Search className="mr-2 h-5 w-5" /> Encontrar Mi Moto
             </Button>
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={scrollToHowItWorks}
             >
               Cómo Funciona
             </Button>
@@ -88,7 +92,7 @@ const HeroSection = () => {
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
         <button 
           className="flex flex-col items-center text-xs text-muted-foreground hover:text-white transition-colors"
-          onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={scrollToHowItWorks}
         >
           Descubre Más
           <ChevronDown className="h-4 w-4 mt-1" />
