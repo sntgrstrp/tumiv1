@@ -2,7 +2,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
-import SearchForm from "@/components/SearchForm";
+import StepByStepFinder from "@/components/StepByStepFinder";
 import ResultsSection from "@/components/ResultsSection";
 import ComparisonSection from "@/components/ComparisonSection";
 import Footer from "@/components/Footer";
@@ -14,7 +14,7 @@ const Index = () => {
       <main>
         <HeroSection />
         <HowItWorksSection />
-        <SearchForm />
+        <StepByStepFinder />
         <ResultsSection />
         <ComparisonSection />
       </main>
