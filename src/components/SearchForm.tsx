@@ -12,7 +12,7 @@ import { useToast } from "@/components/ui/use-toast";
 interface RequestData {
   altura?: number;
   peso?: number;
-  presupuesto?: number;
+  presupuesto?: number; 
   marca?: string;
   tipo_uso?: string;
   cilindrada?: number;
@@ -58,9 +58,9 @@ const SearchForm = () => {
   };
 
   const marcas = [
-    "Cualquiera", "Honda", "Yamaha", "Suzuki", "Kawasaki", "KTM", "BMW", 
-    "Ducati", "Triumph", "Harley-Davidson", "Bajaj", "TVS", "Hero", "Royal Enfield", "AKT"
-  ];
+    "Cualquiera", "Victory", "AKT", "Yamaha", "Honda", "TVS", "Suzuki",
+    "Bajaj", "Hero", "KTM", "SYM", "Benelli", "CF", "Kawasaki", "KYMCO"
+  ];  
 
   const handleSearch = async (mode) => {
     setLoading(true);
@@ -72,10 +72,17 @@ const SearchForm = () => {
       };
       
       if (mode === "basic") {
+        // Calcular alto total sugerido en base a la altura del usuario
+        const seatHeight = height * 0.43;
+        const totalHeightFromUser = Math.round(seatHeight + 35);
+        const bikeWeightFromUser = Math.round(weight + 60);
+
         requestData = {
           altura: height,
           peso: weight,
-          presupuesto: budget
+          presupuesto: budget,
+          alto_total: totalHeightFromUser
+          bike_weight: bikeWeightFromUser
         };
         
         if (selectedBrand && selectedBrand !== "Cualquiera") {
