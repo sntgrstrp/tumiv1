@@ -30,7 +30,7 @@ interface ApiRequestData {
   "Potencia (HP)"?: number;
   "Alto total"?: number;
   "Capacidad del tanque"?: number;
-  "Peso"?: number;
+  // "Peso"?: number;
 }
 
 interface StepProps {
@@ -98,9 +98,9 @@ const StepByStepFinder = () => {
   };
 
   const marcas = [
-    "Honda", "Yamaha", "Suzuki", "Kawasaki", "KTM", "BMW", 
-    "Ducati", "Triumph", "Harley-Davidson", "Bajaj", "TVS", "Hero", "Royal Enfield", "AKT"
-  ];
+    "Cualquiera", "Victory", "AKT", "Yamaha", "Honda", "TVS", "Suzuki",
+    "Bajaj", "Hero", "KTM", "SYM", "Benelli", "CF", "Kawasaki", "KYMCO"
+  ];  
 
   const handleNext = () => {
     // Validate current step
@@ -187,9 +187,10 @@ const StepByStepFinder = () => {
         "Precio": budget
       };
       
-      // Add user's weight to the bike weight parameter
+      // Convertir peso del usuario en peso sugerido de la moto (aprox. 120%)
       if (weight) {
-        requestData["Peso"] = weight;
+        const dryWeightFromUser = weight * 1.2;
+        requestData["Peso"] = Math.round(dryWeightFromUser);
       }
       
       // Add usage type if selected
@@ -213,11 +214,12 @@ const StepByStepFinder = () => {
         requestData["Marca"] = selectedBrand;
       }
       
-      // Add height as Alto total (in cm)
+      // Convertir altura del usuario en alto total de la moto (aprox. 65%)
       if (height) {
-        requestData["Alto total"] = height;
+        const totalHeightFromUser = height * 0.65;
+        requestData["Alto total"] = Math.round(totalHeightFromUser);
       }
-      
+
       // Add advanced specifications if user has experience
       if (hasExperience) {
         if (engineCC) requestData["Cilindrada (CC)"] = parseInt(engineCC);
