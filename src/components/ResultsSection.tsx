@@ -1,9 +1,135 @@
-
+import { useState, useEffect } from "react";
 import BikeCard from "./BikeCard";
 
+interface ApiResponse {
+  status: string;
+  data: BikeRecommendation[] | null;
+  message: string;
+}
+
+interface BikeRecommendation {
+  similitud: number;
+  Marca: string;
+  Modelo: string;
+  "Tipo de moto": string;
+  Precio: number;
+  "Cilindrada (CC)": number;
+  Peso: number;
+  "Potencia (HP)": number;
+  "Alto total": number;
+  Imagen: string;
+  Enlace: string;
+}
+
+interface FormattedBike {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  image: string;
+  compatibility: number;
+  specs: {
+    engine: string;
+    power: string;
+    weight: string;
+    seat_height?: string;
+    engine_type?: string;
+    transmission?: string;
+    front_brake?: string;
+    rear_brake?: string;
+    front_suspension?: string;
+    rear_suspension?: string;
+    tank_capacity?: string;
+    total_height: string;
+    bike_type: string;
+  }
+}
+
 const ResultsSection = () => {
-  // Sample data for bikes (this will be replaced by actual API data)
-  const bikes = [
+  const [recommendations, setRecommendations] = useState<FormattedBike[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchInitialBikes = async () => {
+      try {
+        const initialParams = {
+          "Precio": 15000000
+        };
+        
+        const response = await fetch("http://localhost:5000/recomendar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(initialParams),
+        });
+        
+        if (!response.ok) {
+          console.log("API no disponible para carga inicial de motos");
+          return;
+        }
+        
+        const data: ApiResponse = await response.json();
+        
+        if (data.status === "success" && data.data) {
+          const formattedBikes: FormattedBike[] = data.data.map((bike, index) => formatBikeData(bike, index));
+          setRecommendations(formattedBikes);
+        }
+      } catch (error) {
+        console.log("Error al obtener motos iniciales:", error);
+      }
+    };
+    
+    fetchInitialBikes();
+  }, []);
+  
+  useEffect(() => {
+    const handleRecommendationsReceived = (event: CustomEvent<ApiResponse>) => {
+      setLoading(true);
+      try {
+        const { data, status } = event.detail;
+        
+        if (status === "success" && data) {
+          const formattedBikes: FormattedBike[] = data.map((bike, index) => formatBikeData(bike, index));
+          setRecommendations(formattedBikes);
+          setError(null);
+        } else {
+          setError("No se pudieron obtener recomendaciones. Intente con otros criterios.");
+        }
+      } catch (err) {
+        setError("Error al procesar las recomendaciones.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    window.addEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
+
+    return () => {
+      window.removeEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
+    };
+  }, []);
+
+  const formatBikeData = (bike: BikeRecommendation, index: number): FormattedBike => {
+    return {
+      id: `${index}-${bike.Modelo}`,
+      name: bike.Modelo,
+      brand: bike.Marca,
+      price: bike.Precio,
+      image: bike.Imagen || "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      compatibility: Math.round(bike.similitud),
+      specs: {
+        engine: `${bike["Cilindrada (CC)"]}cc`,
+        power: `${bike["Potencia (HP"]} CV`,
+        weight: `${bike.Peso} kg`,
+        total_height: `${bike["Alto total"]} mm`,
+        bike_type: bike["Tipo de moto"]
+      }
+    };
+  };
+
+  const sampleBikes = [
     {
       id: "1",
       name: "MT-07",
@@ -75,6 +201,8 @@ const ResultsSection = () => {
     }
   ];
 
+  const bikesToDisplay = recommendations.length > 0 ? recommendations : sampleBikes;
+
   return (
     <section id="results" className="py-16 relative">
       <div className="absolute inset-0 -z-10">
@@ -91,11 +219,22 @@ const ResultsSection = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {bikes.map((bike) => (
-            <BikeCard key={bike.id} bike={bike} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center my-12">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-ubike"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center p-8 border border-red-200 rounded-lg bg-red-50 text-red-700">
+            <p>{error}</p>
+            <p className="mt-2 text-sm">Por favor intenta con diferentes criterios de búsqueda.</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {bikesToDisplay.map((bike) => (
+              <BikeCard key={bike.id} bike={bike} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

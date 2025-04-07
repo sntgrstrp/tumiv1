@@ -15,24 +15,22 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-// Define an interface for our request data
-interface RequestData {
-  altura?: number;
-  peso?: number;
-  presupuesto?: number;
-  marca?: string;
-  tipo_uso?: string;
-  cilindrada?: number;
-  potencia?: number;
-  tipo_motor?: string;
-  transmision?: string;
-  freno_delantero?: string;
-  freno_trasero?: string;
-  suspension_delantera?: string;
-  suspension_trasera?: string;
-  capacidad_tanque?: number;
-  bike_weight?: number; // For the bike's weight to avoid confusion with user weight
-  alto_total?: number;
+// API required format interface
+interface ApiRequestData {
+  "Marca"?: string;
+  "Tipo de motor"?: string;
+  "Tipo de transmisión"?: string;
+  "Suspensión delantera"?: string;
+  "Suspensión trasera"?: string;
+  "Freno delantero"?: string;
+  "Freno trasero"?: string;
+  "Tipo de moto"?: string;
+  "Cilindrada (CC)"?: number;
+  "Precio"?: number;
+  "Potencia (HP)"?: number;
+  "Alto total"?: number;
+  "Capacidad del tanque"?: number;
+  "Peso"?: number;
 }
 
 interface StepProps {
@@ -82,6 +80,7 @@ const StepByStepFinder = () => {
   // Advanced specifications
   const [engineCC, setEngineCC] = useState("");
   const [power, setPower] = useState("");
+  const [engineType, setEngineType] = useState("");
   const [frontSuspension, setFrontSuspension] = useState("");
   const [rearSuspension, setRearSuspension] = useState("");
   const [frontBrake, setFrontBrake] = useState("");
@@ -90,6 +89,13 @@ const StepByStepFinder = () => {
   const [bikeWeight, setBikeWeight] = useState("");
 
   const totalSteps = hasExperience ? 6 : 5;
+
+  // Map bike types based on usage
+  const usageToMotorType = {
+    "ciudad": "Naked",
+    "carretera": "Deportiva",
+    "todo-terreno": "Todo Terreno",
+  };
 
   const marcas = [
     "Honda", "Yamaha", "Suzuki", "Kawasaki", "KTM", "BMW", 
@@ -141,42 +147,104 @@ const StepByStepFinder = () => {
     setCurrentStep(prev => Math.max(1, prev - 1));
   };
 
+  // Map our internal values to API expected format
+  const mapTransmissionType = (type: string) => {
+    switch(type) {
+      case "manual": return "Mecanica";
+      case "automatica": return "Automática";
+      case "semiautomatica": return "Semiautomática";
+      default: return undefined;
+    }
+  };
+
+  const mapBrakeType = (type: string) => {
+    switch(type) {
+      case "disco": return "Disco";
+      case "tambor": return "Tambor";
+      case "abs": return "Disco ABS";
+      default: return undefined;
+    }
+  };
+
+  const mapSuspensionType = (type: string) => {
+    switch(type) {
+      case "telescopica": return "Telescópica";
+      case "invertida": return "Invertida";
+      case "horquilla": return "Horquilla";
+      case "monoamortiguador": return "Monoamortiguador";
+      case "doble-amortiguador": return "Doble Amortiguador";
+      case "progresiva": return "Progresiva";
+      default: return undefined;
+    }
+  };
+
   const handleSearch = async () => {
     setLoading(true);
     
     try {
-      // Prepare request data
-      let requestData: RequestData = {
-        altura: height,
-        peso: weight,
-        presupuesto: budget
+      // Prepare request data according to API format
+      let requestData: ApiRequestData = {
+        "Precio": budget
       };
+      
+      // Add user's weight to the bike weight parameter
+      if (weight) {
+        requestData["Peso"] = weight;
+      }
       
       // Add usage type if selected
       if (selectedUseType && selectedUseType !== "cualquiera") {
-        requestData.tipo_uso = selectedUseType;
+        const bikeType = usageToMotorType[selectedUseType as keyof typeof usageToMotorType];
+        if (bikeType) {
+          requestData["Tipo de moto"] = bikeType;
+        }
       }
       
       // Add transmission type if selected
       if (transmissionType && transmissionType !== "cualquiera") {
-        requestData.transmision = transmissionType;
+        const mappedTransmission = mapTransmissionType(transmissionType);
+        if (mappedTransmission) {
+          requestData["Tipo de transmisión"] = mappedTransmission;
+        }
       }
       
       // Add brand if selected
-      if (selectedBrand) {
-        requestData.marca = selectedBrand;
+      if (selectedBrand && selectedBrand !== "no-preferencia") {
+        requestData["Marca"] = selectedBrand;
+      }
+      
+      // Add height as Alto total (in cm)
+      if (height) {
+        requestData["Alto total"] = height;
       }
       
       // Add advanced specifications if user has experience
       if (hasExperience) {
-        if (engineCC) requestData.cilindrada = parseInt(engineCC);
-        if (power) requestData.potencia = parseInt(power);
-        if (frontBrake) requestData.freno_delantero = frontBrake;
-        if (rearBrake) requestData.freno_trasero = rearBrake;
-        if (frontSuspension) requestData.suspension_delantera = frontSuspension;
-        if (rearSuspension) requestData.suspension_trasera = rearSuspension;
-        if (bikeWeight) requestData.bike_weight = parseInt(bikeWeight);
-        if (tankCapacity) requestData.capacidad_tanque = parseFloat(tankCapacity);
+        if (engineCC) requestData["Cilindrada (CC)"] = parseInt(engineCC);
+        if (power) requestData["Potencia (HP)"] = parseInt(power);
+        
+        if (engineType && engineType !== "no-preferencia") {
+          requestData["Tipo de motor"] = engineType;
+        }
+        
+        if (frontBrake && frontBrake !== "no-preferencia") {
+          requestData["Freno delantero"] = mapBrakeType(frontBrake);
+        }
+        
+        if (rearBrake && rearBrake !== "no-preferencia") {
+          requestData["Freno trasero"] = mapBrakeType(rearBrake);
+        }
+        
+        if (frontSuspension && frontSuspension !== "no-preferencia") {
+          requestData["Suspensión delantera"] = mapSuspensionType(frontSuspension);
+        }
+        
+        if (rearSuspension && rearSuspension !== "no-preferencia") {
+          requestData["Suspensión trasera"] = mapSuspensionType(rearSuspension);
+        }
+        
+        if (bikeWeight) requestData["Peso"] = parseInt(bikeWeight);
+        if (tankCapacity) requestData["Capacidad del tanque"] = parseFloat(tankCapacity);
       }
       
       console.log("Enviando datos:", requestData);
@@ -191,7 +259,9 @@ const StepByStepFinder = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const errorData = await response.json();
+        console.error("Error de API:", errorData);
+        throw new Error(`Error: ${response.status} - ${errorData.message || 'Error desconocido'}`);
       }
       
       const data = await response.json();
@@ -200,6 +270,13 @@ const StepByStepFinder = () => {
       // Simulate loading for better UX
       setTimeout(() => {
         setLoading(false);
+        
+        // Show success message
+        toast({
+          title: "¡Búsqueda exitosa!",
+          description: "Hemos encontrado las mejores motocicletas para ti.",
+        });
+        
         // Scroll to results section
         const resultsSection = document.getElementById('results');
         if (resultsSection) {
@@ -211,7 +288,7 @@ const StepByStepFinder = () => {
       console.error("Error al buscar motos:", error);
       toast({
         title: "Error",
-        description: "No se pudieron obtener recomendaciones. Intente nuevamente.",
+        description: error instanceof Error ? error.message : "No se pudieron obtener recomendaciones. Intente nuevamente.",
         variant: "destructive"
       });
       setLoading(false);
@@ -653,10 +730,10 @@ const StepByStepFinder = () => {
           <ul className="space-y-1 text-sm">
             {engineCC && <li><span className="text-muted-foreground">Cilindrada:</span> {engineCC} cc</li>}
             {power && <li><span className="text-muted-foreground">Potencia:</span> {power} HP</li>}
-            {frontSuspension && frontSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión delantera:</span> {frontSuspension}</li>}
-            {rearSuspension && rearSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión trasera:</span> {rearSuspension}</li>}
-            {frontBrake && frontBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos delanteros:</span> {frontBrake}</li>}
-            {rearBrake && rearBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos traseros:</span> {rearBrake}</li>}
+            {frontSuspension && frontSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión delantera:</span> {mapSuspensionType(frontSuspension)}</li>}
+            {rearSuspension && rearSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión trasera:</span> {mapSuspensionType(rearSuspension)}</li>}
+            {frontBrake && frontBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos delanteros:</span> {mapBrakeType(frontBrake)}</li>}
+            {rearBrake && rearBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos traseros:</span> {mapBrakeType(rearBrake)}</li>}
             {tankCapacity && <li><span className="text-muted-foreground">Capacidad mínima del tanque:</span> {tankCapacity} L</li>}
             {bikeWeight && <li><span className="text-muted-foreground">Peso máximo:</span> {bikeWeight} kg</li>}
           </ul>
@@ -809,3 +886,4 @@ const StepByStepFinder = () => {
 };
 
 export default StepByStepFinder;
+
