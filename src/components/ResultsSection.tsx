@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import BikeCard from "./BikeCard";
 
@@ -32,7 +33,7 @@ interface FormattedBike {
     engine: string;
     power: string;
     weight: string;
-    seat_height?: string;
+    seat_height: string; // Changed from optional to required
     engine_type?: string;
     transmission?: string;
     front_brake?: string;
@@ -40,8 +41,8 @@ interface FormattedBike {
     front_suspension?: string;
     rear_suspension?: string;
     tank_capacity?: string;
-    total_height: string;
-    bike_type: string;
+    total_height?: string; // Changed from required to optional
+    bike_type?: string;    // Changed from required to optional
   }
 }
 
@@ -121,8 +122,9 @@ const ResultsSection = () => {
       compatibility: Math.round(bike.similitud),
       specs: {
         engine: `${bike["Cilindrada (CC)"]}cc`,
-        power: `${bike["Potencia (HP"]} CV`,
+        power: `${bike["Potencia (HP)"]} CV`,
         weight: `${bike.Peso} kg`,
+        seat_height: "800 mm", // Added default value since it's required
         total_height: `${bike["Alto total"]} mm`,
         bike_type: bike["Tipo de moto"]
       }
