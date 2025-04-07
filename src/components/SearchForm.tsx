@@ -81,7 +81,7 @@ const SearchForm = () => {
           altura: height,
           peso: weight,
           presupuesto: budget,
-          alto_total: totalHeightFromUser
+          alto_total: totalHeightFromUser,
           bike_weight: bikeWeightFromUser
         };
         
