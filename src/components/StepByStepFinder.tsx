@@ -188,10 +188,10 @@ const StepByStepFinder = () => {
       };
       
       // Convertir peso del usuario en peso sugerido de la moto (aprox. 120%)
-      //if (weight) {
-        //const dryWeightFromUser = weight * 1.2;
-        //requestData["Peso"] = Math.round(dryWeightFromUser);
-      //}
+      if (weight) {
+        const dryWeightFromUser = weight * 1.2;
+        requestData["Peso"] = Math.round(dryWeightFromUser);
+      }
       
       // Add usage type if selected
       if (selectedUseType && selectedUseType !== "cualquiera") {
@@ -245,7 +245,7 @@ const StepByStepFinder = () => {
           requestData["Suspensión trasera"] = mapSuspensionType(rearSuspension);
         }
         
-        //if (bikeWeight) requestData["Peso"] = parseInt(bikeWeight);
+        if (bikeWeight) requestData["Peso"] = parseInt(bikeWeight);
         if (tankCapacity) requestData["Capacidad del tanque"] = parseFloat(tankCapacity);
       }
       
@@ -736,8 +736,8 @@ const StepByStepFinder = () => {
             {rearSuspension && rearSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión trasera:</span> {mapSuspensionType(rearSuspension)}</li>}
             {frontBrake && frontBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos delanteros:</span> {mapBrakeType(frontBrake)}</li>}
             {rearBrake && rearBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos traseros:</span> {mapBrakeType(rearBrake)}</li>}
-            {tankCapacity && <li><span className="text-muted-foreground">Capacidad del tanque:</span> {tankCapacity} L</li>}
-            {bikeWeight && <li><span className="text-muted-foreground">Peso:</span> {bikeWeight} kg</li>}
+            {tankCapacity && <li><span className="text-muted-foreground">Capacidad mínima del tanque:</span> {tankCapacity} L</li>}
+            {bikeWeight && <li><span className="text-muted-foreground">Peso máximo:</span> {bikeWeight} kg</li>}
           </ul>
         </div>
       );
