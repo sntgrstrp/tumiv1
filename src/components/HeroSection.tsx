@@ -68,7 +68,7 @@ const HeroSection = () => {
             <div className="aspect-[3/4] bg-gradient-to-br from-ubike/20 to-ubike-blue/10 rounded-2xl glass-card p-1">
               <div className="h-full w-full rounded-xl overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1632745216225-3536deb4ca1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                  src="https://ideogram.ai/assets/image/lossless/response/vbm6Y75VTZKSvmFvqKA9Eg" 
                   alt="Motocicleta moderna"
                   className="h-full w-full object-cover" 
                 />
