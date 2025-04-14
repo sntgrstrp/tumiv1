@@ -4,9 +4,9 @@ import { useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Group } from "three";
 
-// Using a reliable public 3D model source
-// A motorcycle model in gLTF format from Sketchfab
-const MODEL_URL = "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/dirt-bike/model.gltf";
+// Using a reliable public 3D model source for motorcycle
+// This URL should be accessible and returns a valid GLTF model
+const MODEL_URL = "https://market-assets.fra1.digitaloceanspaces.com/market-assets/models/dirt-bike/model.gltf";
 
 export default function MotorcycleModel({ autoRotate = true }) {
   const motoRef = useRef<Group>(null);

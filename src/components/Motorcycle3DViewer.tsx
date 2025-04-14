@@ -1,10 +1,33 @@
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, Component, ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
 import MotorcycleModel from "./MotorcycleModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ErrorBoundary } from "react-error-boundary";
+
+// Creating our own error boundary component
+class ErrorBoundary extends Component<{
+  children: ReactNode;
+  fallback: ReactNode;
+  onError: (error: Error) => void;
+}> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    this.props.onError(error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
 
 type Motorcycle3DViewerProps = {
   className?: string;
@@ -76,7 +99,10 @@ const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
         </div>
       )}
       
-      <ErrorBoundary FallbackComponent={ModelErrorFallback} onError={handleError}>
+      <ErrorBoundary 
+        fallback={<ModelErrorFallback />} 
+        onError={handleError}
+      >
         <Canvas
           shadows
           className="w-full h-full"
@@ -91,7 +117,6 @@ const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
             background: 'transparent',
             borderRadius: '1rem',
           }}
-          onError={handleError}
         >
           <Suspense fallback={null}>
             <MotorcycleModel />
