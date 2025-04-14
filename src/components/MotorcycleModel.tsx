@@ -1,13 +1,13 @@
 
 import { useRef, useEffect } from "react";
-import { useGLTF, useAnimations, OrbitControls, PresentationControls, Environment, ContactShadows } from "@react-three/drei";
+import { useGLTF, useAnimations, PresentationControls, Environment, ContactShadows } from "@react-three/drei";
 import { Group } from "three";
 
 const MotorcycleModel = () => {
   const group = useRef<Group>(null);
   
-  // Usamos un modelo 3D de motocicleta disponible públicamente
-  const { scene, animations } = useGLTF("https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/motorcycle/model.gltf");
+  // Usamos un modelo 3D de motocicleta disponible públicamente de Sketchfab
+  const { scene, animations } = useGLTF("https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/kawasaki-ninja-h2r/model.gltf");
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
@@ -21,8 +21,8 @@ const MotorcycleModel = () => {
 
     // Ajustar la escala y posición del modelo si es necesario
     if (scene) {
-      scene.scale.set(0.02, 0.02, 0.02);
-      scene.position.set(0, -0.8, 0);
+      scene.scale.set(0.01, 0.01, 0.01);
+      scene.position.set(0, -0.6, 0);
       scene.rotation.set(0, Math.PI / 4, 0);
     }
   }, [scene, actions]);
