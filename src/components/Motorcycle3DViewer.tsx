@@ -1,4 +1,5 @@
-import { Suspense } from "react";
+
+import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import MotorcycleModel from "./MotorcycleModel";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -9,9 +10,16 @@ type Motorcycle3DViewerProps = {
 
 const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
   const isMobile = useIsMobile();
+  const [hasError, setHasError] = useState(false);
 
-  if (isMobile) {
-    // En dispositivos móviles, mostrar una imagen estática en lugar del modelo 3D
+  // Función para manejar errores en la carga del modelo
+  const handleError = () => {
+    console.error("Error loading 3D model");
+    setHasError(true);
+  };
+
+  // Mostrar imagen estática en móviles o si hay un error de carga
+  if (isMobile || hasError) {
     return (
       <div className={`${className} relative w-full h-full rounded-2xl overflow-hidden`}>
         <img 
@@ -44,6 +52,7 @@ const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
           background: 'transparent',
           borderRadius: '1rem',
         }}
+        onError={handleError}
       >
         <Suspense fallback={null}>
           <MotorcycleModel />

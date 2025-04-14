@@ -2,11 +2,11 @@
 import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { Group, PointLight } from "three";
+import { Group } from "three";
 
-// Modelo 3D de motocicleta
-// Fuente: https://sketchfab.com/3d-models/motorcycle-xj6-yamaha-93b614e3fa754f23a9e21c2cda951508
-const MODEL_URL = "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/motorcycle/model.glb";
+// Using a publicly available motorcycle model
+// Source: https://market.pmnd.rs/model/motorcycle
+const MODEL_URL = "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/motorcycle/model.gltf";
 
 export default function MotorcycleModel({ autoRotate = true }) {
   const motoRef = useRef<Group>(null);
