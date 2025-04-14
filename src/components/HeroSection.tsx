@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Search } from "lucide-react";
-import Motorcycle3DViewer from "./Motorcycle3DViewer";
 
 const HeroSection = () => {
   const scrollToFinder = () => {
@@ -65,8 +64,23 @@ const HeroSection = () => {
         </div>
         
         <div className="relative order-first md:order-last flex justify-center">
-          <div className="w-full max-w-md relative h-[500px]">
-            <Motorcycle3DViewer className="aspect-[3/4]" />
+          <div className="w-full max-w-md relative animate-float">
+            <div className="aspect-[3/4] bg-gradient-to-br from-ubike/20 to-ubike-blue/10 rounded-2xl glass-card p-1">
+              <div className="h-full w-full rounded-xl overflow-hidden">
+                <img 
+                  src="https://ideogram.ai/assets/image/lossless/response/vbm6Y75VTZKSvmFvqKA9Eg" 
+                  alt="Motocicleta moderna"
+                  className="h-full w-full object-cover" 
+                />
+              </div>
+            </div>
+            <div className="absolute -bottom-6 -right-6 p-4 glass-card rounded-xl max-w-[200px]">
+              <div className="text-xs text-muted-foreground">Compatibilidad</div>
+              <div className="text-lg font-bold mt-1 text-ubike">98% Match</div>
+              <div className="w-full bg-white/10 h-1.5 rounded-full mt-2">
+                <div className="bg-gradient-to-r from-ubike to-ubike-blue h-full rounded-full" style={{ width: '98%' }}></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
