@@ -1,15 +1,14 @@
-
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import MotorcycleModel from "./MotorcycleModel";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Motorcycle3DViewerProps = {
   className?: string;
 };
 
 const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   if (isMobile) {
     // En dispositivos móviles, mostrar una imagen estática en lugar del modelo 3D
