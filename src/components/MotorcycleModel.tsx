@@ -7,16 +7,25 @@ const MotorcycleModel = () => {
   const group = useRef<Group>(null);
   const [modelLoadError, setModelLoadError] = useState(false);
   
-  // Try to load the external model, but have a fallback ready
-  const { scene, animations } = useGLTF(
-    "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/kawasaki-ninja-h2r/model.gltf", 
-    undefined, 
-    undefined, 
-    (error) => {
-      console.error("Error loading model:", error);
-      setModelLoadError(true);
-    }
-  );
+  // Use a try-catch block around the useGLTF hook to catch any errors
+  let modelData;
+  try {
+    modelData = useGLTF(
+      "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/kawasaki-ninja-h2r/model.gltf", 
+      undefined, 
+      undefined, 
+      (error) => {
+        console.error("Error loading model:", error);
+        setModelLoadError(true);
+      }
+    );
+  } catch (error) {
+    console.error("Exception during model loading:", error);
+    setModelLoadError(true);
+    modelData = { scene: null, animations: [] };
+  }
+  
+  const { scene, animations } = modelData;
   const { actions } = useAnimations(animations, group);
 
   // Create a simple motorcycle shape as fallback
@@ -66,6 +75,7 @@ const MotorcycleModel = () => {
 
   useEffect(() => {
     if (modelLoadError) {
+      console.log("Creating fallback model because of load error");
       createFallbackModel();
     } else if (scene) {
       // Configure imported scene
@@ -95,7 +105,7 @@ const MotorcycleModel = () => {
         snap={{ mass: 4, tension: 1500 }}
       >
         <group ref={group} dispose={null}>
-          {!modelLoadError && <primitive object={scene} />}
+          {!modelLoadError && scene && <primitive object={scene} />}
         </group>
       </PresentationControls>
 
