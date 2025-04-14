@@ -3,10 +3,30 @@ import { Suspense, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import MotorcycleModel from "./MotorcycleModel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorBoundary } from "react-error-boundary";
 
 type Motorcycle3DViewerProps = {
   className?: string;
 };
+
+// Fallback component when 3D model fails to load
+const ModelErrorFallback = () => (
+  <div className="h-full w-full flex flex-col items-center justify-center">
+    <img 
+      src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" 
+      alt="Motocicleta moderna"
+      className="h-full w-full object-cover rounded-xl"
+    />
+    <div className="absolute bottom-4 right-4 p-4 glass-card rounded-xl max-w-[200px]">
+      <div className="text-xs text-muted-foreground">Compatibilidad</div>
+      <div className="text-lg font-bold mt-1 text-ubike">98% Match</div>
+      <div className="w-full bg-white/10 h-1.5 rounded-full mt-2">
+        <div className="bg-gradient-to-r from-ubike to-ubike-blue h-full rounded-full" style={{ width: '98%' }}></div>
+      </div>
+    </div>
+  </div>
+);
 
 const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
   const isMobile = useIsMobile();
@@ -14,8 +34,8 @@ const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Función para manejar errores en la carga del modelo
-  const handleError = () => {
-    console.error("Error loading 3D model");
+  const handleError = (error: Error) => {
+    console.error("Error loading 3D model:", error);
     setHasError(true);
   };
 
@@ -56,25 +76,28 @@ const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
         </div>
       )}
       
-      <Canvas
-        shadows
-        className="w-full h-full"
-        camera={{ position: [0, 1, 5], fov: 50 }}
-        gl={{ 
-          antialias: true,
-          alpha: true,
-          powerPreference: 'high-performance'
-        }}
-        style={{
-          background: 'transparent',
-          borderRadius: '1rem',
-        }}
-        onError={handleError}
-      >
-        <Suspense fallback={null}>
-          <MotorcycleModel />
-        </Suspense>
-      </Canvas>
+      <ErrorBoundary FallbackComponent={ModelErrorFallback} onError={handleError}>
+        <Canvas
+          shadows
+          className="w-full h-full"
+          camera={{ position: [0, 1, 5], fov: 50 }}
+          gl={{ 
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance',
+            failIfMajorPerformanceCaveat: false
+          }}
+          style={{
+            background: 'transparent',
+            borderRadius: '1rem',
+          }}
+          onError={handleError}
+        >
+          <Suspense fallback={null}>
+            <MotorcycleModel />
+          </Suspense>
+        </Canvas>
+      </ErrorBoundary>
       
       {/* Card flotante con la compatibilidad */}
       <div className="absolute bottom-4 right-4 p-4 glass-card rounded-xl max-w-[200px] z-10">

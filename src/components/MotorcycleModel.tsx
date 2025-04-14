@@ -4,13 +4,13 @@ import { useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Group } from "three";
 
-// Using a more reliable model source
-// A simple motorcycle model from the Three.js examples
-const MODEL_URL = "https://raw.githubusercontent.com/pmndrs/drei-assets/master/honda.glb";
+// Using a reliable public 3D model source
+// A motorcycle model in gLTF format from Sketchfab
+const MODEL_URL = "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/dirt-bike/model.gltf";
 
 export default function MotorcycleModel({ autoRotate = true }) {
   const motoRef = useRef<Group>(null);
-  const { scene } = useGLTF(MODEL_URL);
+  const { scene } = useGLTF(MODEL_URL, true);
   
   // Aplicar materiales y ajustes al modelo
   useEffect(() => {
@@ -73,5 +73,5 @@ export default function MotorcycleModel({ autoRotate = true }) {
   );
 }
 
-// Pre-cargamos el modelo para mejor rendimiento
+// Pre-cargamos el modelo para mejor rendimiento y evitar latencia
 useGLTF.preload(MODEL_URL);
