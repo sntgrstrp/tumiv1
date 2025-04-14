@@ -4,9 +4,9 @@ import { useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Group } from "three";
 
-// Using a publicly available motorcycle model
-// Source: https://market.pmnd.rs/model/motorcycle
-const MODEL_URL = "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/motorcycle/model.gltf";
+// Using a more reliable model source
+// A simple motorcycle model from the Three.js examples
+const MODEL_URL = "https://raw.githubusercontent.com/pmndrs/drei-assets/master/honda.glb";
 
 export default function MotorcycleModel({ autoRotate = true }) {
   const motoRef = useRef<Group>(null);

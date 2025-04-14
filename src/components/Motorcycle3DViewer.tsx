@@ -1,5 +1,5 @@
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import MotorcycleModel from "./MotorcycleModel";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -11,12 +11,22 @@ type Motorcycle3DViewerProps = {
 const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
   const isMobile = useIsMobile();
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Función para manejar errores en la carga del modelo
   const handleError = () => {
     console.error("Error loading 3D model");
     setHasError(true);
   };
+
+  // Simulación de carga completada
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   // Mostrar imagen estática en móviles o si hay un error de carga
   if (isMobile || hasError) {
@@ -40,6 +50,12 @@ const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
 
   return (
     <div className={`${className} relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-background/80 to-background/10`}>
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="w-10 h-10 border-4 border-ubike border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+      
       <Canvas
         shadows
         className="w-full h-full"
@@ -47,6 +63,7 @@ const Motorcycle3DViewer = ({ className }: Motorcycle3DViewerProps) => {
         gl={{ 
           antialias: true,
           alpha: true,
+          powerPreference: 'high-performance'
         }}
         style={{
           background: 'transparent',
