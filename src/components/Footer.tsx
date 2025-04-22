@@ -58,31 +58,7 @@ const Footer = () => {
             </ul>
           </div>
           
-          <div>
-            <h3 className="font-bold mb-4">Legal</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-ubike transition-colors">
-                  Términos y Condiciones
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-ubike transition-colors">
-                  Política de Privacidad
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-ubike transition-colors">
-                  Cookies
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-ubike transition-colors">
-                  Aviso Legal
-                </a>
-              </li>
-            </ul>
-          </div>
+          
           
           <div>
             <h3 className="font-bold mb-4">Contacto</h3>
