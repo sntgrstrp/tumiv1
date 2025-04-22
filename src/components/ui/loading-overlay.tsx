@@ -22,10 +22,10 @@ const LoadingOverlay = ({
       fullScreen ? "fixed inset-0 z-50" : "absolute inset-0 z-10",
       className
     )}>
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center space-y-4 glass-card p-8 rounded-xl animate-fade-in">
         {error ? (
           <>
-            <AlertTriangle className="h-8 w-8 text-destructive" />
+            <AlertTriangle className="h-8 w-8 text-destructive animate-pulse" />
             <div className="text-center">
               <p className="text-sm font-medium text-destructive">{error}</p>
               <p className="text-xs text-muted-foreground mt-1">
