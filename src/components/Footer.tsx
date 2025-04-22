@@ -1,4 +1,3 @@
-
 import { Bike, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
@@ -9,7 +8,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Bike className="h-6 w-6 text-ubike" />
-              <span className="text-xl font-bold ubike-gradient">uBikeAI</span>
+              <span className="text-xl font-bold ubike-gradient">TuMI</span>
             </div>
             <p className="text-muted-foreground text-sm">
               Encuentra tu moto ideal con la ayuda de nuestra avanzada inteligencia artificial. Recomendaciones personalizadas según tus características y preferencias.
@@ -101,7 +100,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-12 pt-6 border-t border-white/10 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} uBikeAI. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} TuMI. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
