@@ -65,10 +65,7 @@ const Footer = () => {
             <address className="not-italic text-muted-foreground">
               <p>Correo: tumitumotoideal@gmail.com</p>
               <p>Teléfono: +57 316 824 1098</p>
-              <p className="mt-2">
-                Calle Tecnología 123<br />
-                28001 Madrid, España
-              </p>
+              
             </address>
           </div>
         </div>
