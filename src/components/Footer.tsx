@@ -1,8 +1,6 @@
 import { Bike, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
-
 const Footer = () => {
-  return (
-    <footer className="py-12 border-t border-white/10">
+  return <footer className="py-12 border-t border-white/10">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
@@ -89,7 +87,7 @@ const Footer = () => {
           <div>
             <h3 className="font-bold mb-4">Contacto</h3>
             <address className="not-italic text-muted-foreground">
-              <p>Email: info@ubikeai.com</p>
+              <p>Correo: tumitumotoideal@gmail.com</p>
               <p>Teléfono: +34 911 123 456</p>
               <p className="mt-2">
                 Calle Tecnología 123<br />
@@ -103,8 +101,6 @@ const Footer = () => {
           <p>© {new Date().getFullYear()} TuMI. Todos los derechos reservados.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
