@@ -1,5 +1,6 @@
 
 import { Bike } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 const LoadingBikeAnimation = () => {
   return (
@@ -9,9 +10,7 @@ const LoadingBikeAnimation = () => {
           <Bike className="h-12 w-12 text-ubike" strokeWidth={1.5} />
         </div>
         <div className="mt-8 w-full">
-          <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-ubike animate-progress rounded-full" />
-          </div>
+          <Progress value={33} className="w-full h-1" />
           <p className="text-sm text-muted-foreground mt-4 text-center animate-pulse">
             Buscando tu moto ideal...
           </p>
