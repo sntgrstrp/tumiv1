@@ -22,7 +22,7 @@ const Footer = () => {
                 <Twitter className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-ubike transition-colors">
-                <Youtube className="h-5 w-5" />
+                
               </a>
             </div>
           </div>
