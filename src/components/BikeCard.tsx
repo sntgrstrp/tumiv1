@@ -1,7 +1,15 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Bike, ChevronDown, ChevronUp, Zap, ShieldCheck, FuelIcon, Info, X } from "lucide-react";
+import { 
+  Bike, 
+  ChevronDown, 
+  ChevronUp, 
+  Zap, 
+  ShieldCheck, 
+  FuelIcon, 
+  Info
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface BikeCardProps {
@@ -13,12 +21,11 @@ interface BikeCardProps {
     image: string;
     compatibility: number;
     link: string;
-    description?: string;
+    description: string;
     specs: {
       engine: string;
       power: string;
       weight: string;
-      seat_height: string;
       engine_type: string;
       transmission: string;
       front_brake: string;
@@ -34,7 +41,6 @@ interface BikeCardProps {
 
 const BikeCard = ({ bike }: BikeCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
-
   const toggleDetails = () => setShowDetails(!showDetails);
 
   return (
@@ -66,7 +72,9 @@ const BikeCard = ({ bike }: BikeCardProps) => {
             <p className="text-muted-foreground text-sm">{bike.brand}</p>
           </div>
           <div className="text-right">
-            <p className="font-bold text-lg">${bike.price.toLocaleString('es-CO')}</p>
+            <p className="font-bold text-lg">
+              ${bike.price.toLocaleString('es-CO')}
+            </p>
           </div>
         </div>
         
@@ -81,7 +89,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <Bike className="h-4 w-4 text-ubike-purple" />
-            <span>{bike.specs.seat_height} altura</span>
+            <span>{bike.specs.total_height}</span>
           </div>
         </div>
         
@@ -152,13 +160,6 @@ const BikeCard = ({ bike }: BikeCardProps) => {
                     <Info className="h-3 w-3 text-ubike" />
                   </div>
                   <span>Cap. Tanque: {bike.specs.tank_capacity}</span>
-                </div>
-                
-                <div className="flex items-start gap-2">
-                  <div className="min-w-4 mt-0.5">
-                    <Info className="h-3 w-3 text-ubike" />
-                  </div>
-                  <span>Alto Total: {bike.specs.total_height}</span>
                 </div>
               </div>
               

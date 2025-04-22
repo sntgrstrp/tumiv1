@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import BikeCard from "./BikeCard";
 
@@ -43,7 +42,6 @@ interface FormattedBike {
     engine: string;
     power: string;
     weight: string;
-    seat_height: string;
     engine_type: string;
     transmission: string;
     front_brake: string;
@@ -53,48 +51,14 @@ interface FormattedBike {
     tank_capacity: string;
     total_height: string;
     bike_type: string;
-  }
+  };
 }
 
 const ResultsSection = () => {
   const [recommendations, setRecommendations] = useState<FormattedBike[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    const fetchInitialBikes = async () => {
-      try {
-        const initialParams = {
-          "Precio": 15000000
-        };
-        
-        const response = await fetch("http://localhost:5000/recomendar", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(initialParams),
-        });
-        
-        if (!response.ok) {
-          console.log("API no disponible para carga inicial de motos");
-          return;
-        }
-        
-        const data: ApiResponse = await response.json();
-        
-        if (data.status === "success" && data.data) {
-          const formattedBikes: FormattedBike[] = data.data.map((bike, index) => formatBikeData(bike, index));
-          setRecommendations(formattedBikes);
-        }
-      } catch (error) {
-        console.log("Error al obtener motos iniciales:", error);
-      }
-    };
-    
-    fetchInitialBikes();
-  }, []);
-  
+
   useEffect(() => {
     const handleRecommendationsReceived = (event: CustomEvent<ApiResponse>) => {
       setLoading(true);
@@ -123,23 +87,21 @@ const ResultsSection = () => {
   }, []);
 
   const formatBikeData = (bike: BikeRecommendation, index: number): FormattedBike => {
-    // Default seat height since it's not in the API response
-    const defaultSeatHeight = "800 mm";
+    const placeholderImage = "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
     
     return {
       id: `${index}-${bike.Modelo}`,
       name: bike.Modelo,
       brand: bike.Marca,
       price: bike.Precio,
-      image: bike.Imagen || "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      image: bike.Imagen || placeholderImage,
       compatibility: Math.round(bike.similitud),
       link: bike.Enlace,
       description: bike.Descripción,
       specs: {
         engine: `${bike["Cilindrada (CC)"]}cc`,
-        power: `${bike["Potencia (HP)"]} CV`,
+        power: `${bike["Potencia (HP"]} CV`,
         weight: `${bike.Peso} kg`,
-        seat_height: defaultSeatHeight,
         engine_type: bike["Tipo de motor"],
         transmission: bike["Tipo de transmisión"],
         front_brake: bike["Freno delantero"],
