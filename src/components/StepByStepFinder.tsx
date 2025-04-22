@@ -786,7 +786,7 @@ const StepByStepFinder = () => {
   };
   
   return (
-    <section className="py-12">
+    <section id="step-by-step-finder" className="py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">

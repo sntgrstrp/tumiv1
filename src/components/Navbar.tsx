@@ -16,22 +16,25 @@ const Navbar = () => {
   }, []);
 
   const scrollToSection = (id) => {
+    // Close mobile menu first
+    setMobileMenuOpen(false);
+    
     if (id === '') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      setMobileMenuOpen(false);
       return;
     }
     
-    const element = document.getElementById(id);
-    if (element) {
-      // Add a small delay to ensure the mobile menu is closed before scrolling
-      setTimeout(() => {
+    // Add a small delay to ensure the mobile menu is closed
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
         const yOffset = -80; // Offset to account for fixed header
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
-      }, 100);
-    }
-    setMobileMenuOpen(false);
+      } else {
+        console.error(`Element with id "${id}" not found`);
+      }
+    }, 100);
   };
   
   return <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "py-2 bg-background/90 backdrop-blur-md border-b border-white/10" : "py-4"}`}>
