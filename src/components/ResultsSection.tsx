@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import BikeCard from "./BikeCard";
 
@@ -9,17 +8,26 @@ interface ApiResponse {
 }
 
 interface BikeRecommendation {
-  similitud: number;
+  ID?: string;
   Marca: string;
   Modelo: string;
-  "Tipo de moto": string;
-  Precio: number;
   "Cilindrada (CC)": number;
-  Peso: number;
+  Precio: number;
   "Potencia (HP)": number;
+  "Tipo de motor"?: string;
+  "Tipo de transmisión"?: string;
+  "Suspensión delantera"?: string;
+  "Suspensión trasera"?: string;
+  "Freno delantero"?: string;
+  "Freno trasero"?: string;
   "Alto total": number;
+  "Capacidad del tanque"?: number;
+  Peso: number;
+  "Tipo de moto": string;
+  "Descripción general"?: string;
   Imagen: string;
   Enlace: string;
+  similitud: number;
 }
 
 interface FormattedBike {
@@ -29,11 +37,11 @@ interface FormattedBike {
   price: number;
   image: string;
   compatibility: number;
+  url: string;
   specs: {
     engine: string;
     power: string;
     weight: string;
-    seat_height: string; // Changed from optional to required
     engine_type?: string;
     transmission?: string;
     front_brake?: string;
@@ -41,8 +49,9 @@ interface FormattedBike {
     front_suspension?: string;
     rear_suspension?: string;
     tank_capacity?: string;
-    total_height?: string; // Changed from required to optional
-    bike_type?: string;    // Changed from required to optional
+    total_height?: string;
+    bike_type?: string;
+    seat_height?: string;
   }
 }
 
@@ -114,19 +123,27 @@ const ResultsSection = () => {
 
   const formatBikeData = (bike: BikeRecommendation, index: number): FormattedBike => {
     return {
-      id: `${index}-${bike.Modelo}`,
+      id: bike.ID || `${index}-${bike.Modelo}`,
       name: bike.Modelo,
       brand: bike.Marca,
       price: bike.Precio,
-      image: bike.Imagen || "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      image: bike.Imagen,
+      url: bike.Enlace,
       compatibility: Math.round(bike.similitud),
       specs: {
         engine: `${bike["Cilindrada (CC)"]}cc`,
         power: `${bike["Potencia (HP)"]} CV`,
         weight: `${bike.Peso} kg`,
-        seat_height: "800 mm", // Added default value since it's required
-        total_height: `${bike["Alto total"]} mm`,
-        bike_type: bike["Tipo de moto"]
+        engine_type: bike["Tipo de motor"],
+        transmission: bike["Tipo de transmisión"],
+        front_brake: bike["Freno delantero"],
+        rear_brake: bike["Freno trasero"],
+        front_suspension: bike["Suspensión delantera"],
+        rear_suspension: bike["Suspensión trasera"],
+        tank_capacity: bike["Capacidad del tanque"] ? `${bike["Capacidad del tanque"]} L` : undefined,
+        total_height: bike["Alto total"] ? `${bike["Alto total"]} mm` : undefined,
+        bike_type: bike["Tipo de moto"],
+        seat_height: "800 mm"
       }
     };
   };
@@ -138,12 +155,12 @@ const ResultsSection = () => {
       brand: "Yamaha",
       price: 35000000,
       image: "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      url: "https://www.example.com/mt-07",
       compatibility: 98,
       specs: {
         engine: "689cc",
         power: "73.4 CV",
         weight: "184 kg",
-        seat_height: "805 mm",
         engine_type: "4 Tiempos",
         transmission: "Manual 6 velocidades",
         front_brake: "Discos ABS",
@@ -161,12 +178,12 @@ const ResultsSection = () => {
       brand: "Kawasaki",
       price: 33500000,
       image: "https://images.unsplash.com/photo-1549027032-1977ba8a1b15?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      url: "https://www.example.com/z650",
       compatibility: 94,
       specs: {
         engine: "649cc",
         power: "68 CV",
         weight: "187 kg",
-        seat_height: "790 mm",
         engine_type: "4 Tiempos",
         transmission: "Manual 6 velocidades",
         front_brake: "Discos ABS",
@@ -184,12 +201,12 @@ const ResultsSection = () => {
       brand: "Honda",
       price: 42500000,
       image: "https://images.unsplash.com/photo-1601989307097-7365eb41d031?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      url: "https://www.example.com/cb650r",
       compatibility: 92,
       specs: {
         engine: "649cc",
         power: "95 CV",
         weight: "202 kg",
-        seat_height: "810 mm",
         engine_type: "4 Tiempos",
         transmission: "Manual 6 velocidades",
         front_brake: "Discos ABS",
@@ -203,7 +220,7 @@ const ResultsSection = () => {
     }
   ];
 
-  const bikesToDisplay = recommendations.length > 0 ? recommendations : sampleBikes;
+  const bikesToDisplay = recommendations.length > 0 ? recommendations : [];
 
   return (
     <section id="results" className="py-16 relative">

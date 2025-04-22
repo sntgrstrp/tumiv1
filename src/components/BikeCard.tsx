@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Bike, ChevronDown, ChevronUp, Zap, ShieldCheck, FuelIcon, Info, X } from "lucide-react";
+import { Bike, ChevronDown, ChevronUp, Zap, ShieldCheck, FuelIcon, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface BikeCardProps {
@@ -12,11 +11,12 @@ interface BikeCardProps {
     price: number;
     image: string;
     compatibility: number;
+    url: string;
     specs: {
       engine: string;
       power: string;
       weight: string;
-      seat_height: string;
+      seat_height?: string;
       engine_type?: string;
       transmission?: string;
       front_brake?: string;
@@ -40,7 +40,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
       <div className="relative">
         <img 
           src={bike.image} 
-          alt={bike.name}
+          alt={`${bike.brand} ${bike.name}`}
           className="w-full aspect-[4/3] object-cover object-center transition-transform group-hover:scale-105" 
         />
         <div className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium flex items-center">
@@ -171,7 +171,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
                 <Button 
                   size="sm" 
                   className="bg-ubike hover:bg-ubike/90 text-white"
-                  onClick={() => window.open(`https://www.google.com/search?q=${bike.brand}+${bike.name}+caracteristicas`, '_blank')}
+                  onClick={() => window.open(bike.url, '_blank')}
                 >
                   Más Información
                 </Button>
