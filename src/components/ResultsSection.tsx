@@ -159,8 +159,8 @@ const ResultsSection = () => {
       link: bike.Enlace || "#",
       description: bike.Descripción || "Descripción no disponible",
       specs: {
-        engine: `${bike["Cilindrada (CC)"] || "N/A"}cc`,
-        power: `${bike["Potencia (HP)"] || "N/A"} CV`,
+        engine: `${bike["Cilindrada (CC)"] || "N/A"}CC`,
+        power: `${bike["Potencia (HP)"] || "N/A"} HP`,
         weight: `${bike.Peso || "N/A"} kg`,
         engine_type: bike["Tipo de motor"] || "No especificado",
         transmission: bike["Tipo de transmisión"] || "No especificado",
@@ -169,7 +169,7 @@ const ResultsSection = () => {
         front_suspension: bike["Suspensión delantera"] || "No especificado",
         rear_suspension: bike["Suspensión trasera"] || "No especificado",
         tank_capacity: `${bike["Capacidad del tanque"] || "N/A"} L`,
-        total_height: `${bike["Alto total"] || "N/A"} mm`,
+        total_height: `${bike["Alto total"] || "N/A"} CM`,
         bike_type: bike["Tipo de moto"] || "No especificado"
       }
     };
