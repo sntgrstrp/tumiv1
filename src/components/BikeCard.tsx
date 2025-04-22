@@ -45,11 +45,14 @@ const BikeCard = ({ bike }: BikeCardProps) => {
   
   // Manejo de error de imagen
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    console.log("Error al cargar imagen:", bike.image);
     e.currentTarget.src = "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
   };
 
   // Formatear el precio con separador de miles
-  const formattedPrice = bike.price.toLocaleString('es-CO');
+  const formattedPrice = bike.price ? bike.price.toLocaleString('es-CO') : 'N/A';
+
+  console.log("Renderizando BikeCard:", bike.id, bike.name, bike.brand);
 
   return (
     <div className="glass-card rounded-xl overflow-hidden transition-all hover:translate-y-[-5px] group animate-fade-in relative">

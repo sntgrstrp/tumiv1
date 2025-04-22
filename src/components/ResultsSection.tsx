@@ -62,6 +62,7 @@ const ResultsSection = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Función para manejar el evento cuando se reciben las recomendaciones
     const handleRecommendationsReceived = (event: CustomEvent<ApiResponse>) => {
       setLoading(true);
       try {
@@ -70,8 +71,13 @@ const ResultsSection = () => {
         
         if (status === "success" && data && data.length > 0) {
           console.log("Datos de recomendaciones válidos:", data);
+          
+          // Guardar la respuesta completa en sessionStorage
+          saveRecommendationsToStorage(event.detail);
+          
           const formattedBikes: FormattedBike[] = data.map((bike, index) => formatBikeData(bike, index));
           console.log("Datos formateados:", formattedBikes);
+          
           setRecommendations(formattedBikes);
           setError(null);
           
@@ -101,29 +107,40 @@ const ResultsSection = () => {
       }
     };
 
-    // Añadir el event listener
+    // Añadir el event listener para capturar el evento personalizado
     window.addEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
 
-    // Verificar si ya tenemos recomendaciones almacenadas en sessionStorage
-    const savedRecommendations = sessionStorage.getItem('motorcycleRecommendations');
-    if (savedRecommendations) {
-      try {
-        const parsedData = JSON.parse(savedRecommendations) as ApiResponse;
-        if (parsedData.status === "success" && parsedData.data && parsedData.data.length > 0) {
-          const formattedBikes = parsedData.data.map((bike, index) => formatBikeData(bike, index));
-          setRecommendations(formattedBikes);
+    // Verificar si ya tenemos recomendaciones almacenadas en sessionStorage al montar el componente
+    const checkStoredRecommendations = () => {
+      const savedRecommendations = sessionStorage.getItem('motorcycleRecommendations');
+      if (savedRecommendations) {
+        try {
+          const parsedData = JSON.parse(savedRecommendations) as ApiResponse;
+          console.log("Recuperando datos guardados:", parsedData);
+          
+          if (parsedData.status === "success" && parsedData.data && parsedData.data.length > 0) {
+            const formattedBikes = parsedData.data.map((bike, index) => formatBikeData(bike, index));
+            console.log("Datos guardados formateados:", formattedBikes);
+            setRecommendations(formattedBikes);
+          }
+        } catch (err) {
+          console.error("Error al recuperar recomendaciones guardadas:", err);
         }
-      } catch (err) {
-        console.error("Error al recuperar recomendaciones guardadas:", err);
       }
-    }
+    };
+    
+    // Ejecutar la verificación de datos guardados
+    checkStoredRecommendations();
 
+    // Limpiar el event listener cuando el componente se desmonte
     return () => {
       window.removeEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
     };
   }, []);
 
+  // Función para formatear los datos de la moto en el formato que espera BikeCard
   const formatBikeData = (bike: BikeRecommendation, index: number): FormattedBike => {
+    console.log(`Formateando moto ${index}:`, bike);
     const placeholderImage = "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
     
     return {
@@ -152,14 +169,29 @@ const ResultsSection = () => {
     };
   };
 
-  // Función para guardar las recomendaciones en sessionStorage cuando las recibimos
+  // Función para guardar las recomendaciones en sessionStorage
   const saveRecommendationsToStorage = (response: ApiResponse) => {
     try {
       sessionStorage.setItem('motorcycleRecommendations', JSON.stringify(response));
+      console.log("Recomendaciones guardadas en sessionStorage");
     } catch (err) {
       console.error("Error al guardar recomendaciones:", err);
     }
   };
+
+  // Función para debugear el estado actual
+  const debugState = () => {
+    console.log("Estado actual:");
+    console.log("- recommendations:", recommendations);
+    console.log("- loading:", loading);
+    console.log("- error:", error);
+    console.log("- sessionStorage:", sessionStorage.getItem('motorcycleRecommendations'));
+  };
+
+  // Depuración
+  useEffect(() => {
+    debugState();
+  }, [recommendations, loading, error]);
 
   return (
     <section id="results" className="py-16 relative">
@@ -188,7 +220,7 @@ const ResultsSection = () => {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recommendations.length > 0 ? (
+            {recommendations && recommendations.length > 0 ? (
               recommendations.map((bike) => (
                 <BikeCard key={bike.id} bike={bike} />
               ))
