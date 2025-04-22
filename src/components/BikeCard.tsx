@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -73,7 +74,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
     if (!value) return 'N/A';
     
     if (type === 'power') {
-      return value.replace('CV', 'HP').replace('cv', 'HP').replace('HP', 'HP');
+      return `Potencia: ${value.replace('CV', 'HP').replace('cv', 'HP').replace('HP', 'HP')}`;
     }
     if (type === 'height') {
       if (value.includes('mm')) {
