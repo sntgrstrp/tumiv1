@@ -5,6 +5,7 @@ import { toast } from "../hooks/use-toast";
 import { ApiResponse, FormattedBike } from "./results/BikeRecommendationTypes";
 import { formatBikeData } from "./results/BikeDataFormatter";
 import ResultsHeader from "./results/ResultsHeader";
+import ResultsLoadingState from "./results/ResultsLoadingState";
 
 const ResultsSection = () => {
   const [recommendations, setRecommendations] = useState<FormattedBike[]>([]);
@@ -106,13 +107,13 @@ const ResultsSection = () => {
         />
         
         {loading ? (
-          <div className="flex justify-center my-12">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-ubike"></div>
-          </div>
+          <ResultsLoadingState />
         ) : error ? (
-          <div className="text-center p-8 border border-red-200 rounded-lg bg-red-50 text-red-700">
-            <p>{error}</p>
-            <p className="mt-2 text-sm">Por favor intenta con diferentes criterios de búsqueda.</p>
+          <div className="text-center p-8 border border-destructive/20 rounded-lg bg-destructive/10 text-destructive">
+            <p className="font-medium">{error}</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Por favor intenta con diferentes criterios de búsqueda.
+            </p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -122,7 +123,9 @@ const ResultsSection = () => {
               ))
             ) : (
               <div className="col-span-full text-center p-8">
-                <p className="text-muted-foreground">Sin recomendaciones. Intenta buscar usando los filtros.</p>
+                <p className="text-muted-foreground">
+                  Sin recomendaciones. Intenta buscar usando los filtros.
+                </p>
               </div>
             )}
           </div>
