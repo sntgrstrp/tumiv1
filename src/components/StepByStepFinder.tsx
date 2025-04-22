@@ -799,7 +799,18 @@ const StepByStepFinder = () => {
       </div>
     );
   };
-  
+
+  const renderLoadingButton = () => (
+    <Button disabled className="relative w-32 h-10 overflow-hidden">
+      <span className="absolute inset-0 flex items-center justify-center">
+        <span className="absolute w-6 h-6">
+          <Bike className="w-full h-full animate-[spin_2s_linear_infinite] text-white" />
+        </span>
+      </span>
+      <span className="opacity-0">Loading</span>
+    </Button>
+  );
+
   return (
     <section id="finder" className="py-12">
       <div className="container mx-auto px-4">
@@ -835,29 +846,21 @@ const StepByStepFinder = () => {
                 Atrás
               </Button>
               
-              <Button 
-                onClick={handleNext}
-                disabled={loading}
-              >
-                {currentStep === totalSteps ? (
-                  loading ? (
-                    <>
-                      <span className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                      Buscando...
-                    </>
-                  ) : (
-                    <>
-                      <Search className="mr-1 h-4 w-4" />
-                      Buscar
-                    </>
-                  )
+              {currentStep === totalSteps ? (
+                loading ? (
+                  renderLoadingButton()
                 ) : (
-                  <>
-                    Siguiente
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </>
-                )}
-              </Button>
+                  <Button onClick={handleNext}>
+                    <Search className="mr-1 h-4 w-4" />
+                    Buscar
+                  </Button>
+                )
+              ) : (
+                <Button onClick={handleNext}>
+                  Siguiente
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              )}
             </div>
           </div>
         </div>
