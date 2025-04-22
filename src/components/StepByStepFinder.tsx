@@ -29,7 +29,7 @@ interface ApiRequestData {
   "Cilindrada (CC)"?: number;
   "Precio"?: number;
   "Potencia (HP)"?: number;
-  "Alto total"?: number;
+  //"Alto total"?: number;
   "Capacidad del tanque"?: number;
   // "Peso"?: number;
 }
@@ -87,7 +87,7 @@ const StepByStepFinder = () => {
   const [frontBrake, setFrontBrake] = useState("");
   const [rearBrake, setRearBrake] = useState("");
   const [tankCapacity, setTankCapacity] = useState("");
-  const [bikeWeight, setBikeWeight] = useState("");
+  //const [bikeWeight, setBikeWeight] = useState("");
 
   const totalSteps = hasExperience ? 6 : 5;
 
@@ -227,11 +227,13 @@ const StepByStepFinder = () => {
         requestData["Marca"] = selectedBrand;
       }
       
+      /*
       // Convertir altura del usuario en alto total de la moto (aprox. 65%)
       if (height) {
         const totalHeightFromUser = height * 0.65;
         requestData["Alto total"] = Math.round(totalHeightFromUser);
       }
+      */
 
       // Add advanced specifications if user has experience
       if (hasExperience) {
@@ -346,7 +348,7 @@ const StepByStepFinder = () => {
             min={150} 
             max={210} 
             step={1} 
-            onValueChange={(value) => setHeight(value[0])}
+            //onValueChange={(value) => setHeight(value[0])}
             className="py-4"
           />
         </div>
@@ -725,8 +727,8 @@ const StepByStepFinder = () => {
             <Input
               type="number"
               placeholder="Peso máximo en kg"
-              value={bikeWeight}
-              onChange={(e) => setBikeWeight(e.target.value)}
+              //value={bikeWeight}
+              //onChange={(e) => setBikeWeight(e.target.value)}
             />
           </div>
         </div>
@@ -750,7 +752,6 @@ const StepByStepFinder = () => {
             {frontBrake && frontBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos delanteros:</span> {mapBrakeType(frontBrake)}</li>}
             {rearBrake && rearBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos traseros:</span> {mapBrakeType(rearBrake)}</li>}
             {tankCapacity && <li><span className="text-muted-foreground">Capacidad mínima del tanque:</span> {tankCapacity} L</li>}
-            {bikeWeight && <li><span className="text-muted-foreground">Peso máximo:</span> {bikeWeight} kg</li>}
           </ul>
         </div>
       );
