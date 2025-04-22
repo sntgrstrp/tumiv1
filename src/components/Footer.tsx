@@ -2,7 +2,7 @@ import { Bike, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 const Footer = () => {
   return <footer className="py-12 border-t border-white/10">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-4 gap-8 place-items-center text-center">
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Bike className="h-6 w-6 text-ubike" />
