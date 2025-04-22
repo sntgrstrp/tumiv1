@@ -16,9 +16,20 @@ const Navbar = () => {
   }, []);
 
   const scrollToSection = (id) => {
+    if (id === '') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setMobileMenuOpen(false);
+      return;
+    }
+    
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      // Add a small delay to ensure the mobile menu is closed before scrolling
+      setTimeout(() => {
+        const yOffset = -80; // Offset to account for fixed header
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 100);
     }
     setMobileMenuOpen(false);
   };
@@ -33,12 +44,12 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-sm text-foreground/80 hover:text-ubike transition-colors">Inicio</a>
+            <a href="#" className="text-sm text-foreground/80 hover:text-ubike transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection(''); }}>Inicio</a>
             <a href="#" 
                onClick={(e) => { e.preventDefault(); scrollToSection('how-it-works'); }} 
                className="text-sm text-foreground/80 hover:text-ubike transition-colors">Cómo Funciona</a>
             <a href="#" 
-               onClick={(e) => { e.preventDefault(); scrollToSection('finder'); }}
+               onClick={(e) => { e.preventDefault(); scrollToSection('step-by-step-finder'); }}
                className="text-sm text-foreground/80 hover:text-ubike transition-colors">Buscador</a>
             <a href="#" 
                onClick={(e) => { e.preventDefault(); scrollToSection('comparison'); }}
@@ -49,7 +60,7 @@ const Navbar = () => {
             <Button 
               className="bg-ubike hover:bg-ubike/90 text-white" 
               size="sm"
-              onClick={() => scrollToSection('finder')}
+              onClick={() => scrollToSection('step-by-step-finder')}
             >
               <Search className="h-4 w-4 mr-2" /> Buscar Moto
             </Button>
@@ -72,7 +83,7 @@ const Navbar = () => {
               <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('how-it-works'); }}>
                 Cómo Funciona
               </a>
-              <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('finder'); }}>
+              <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('step-by-step-finder'); }}>
                 Buscador
               </a>
               <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('comparison'); }}>
@@ -82,7 +93,7 @@ const Navbar = () => {
                 <Button variant="outline" className="w-full justify-center">
                   Iniciar Sesión
                 </Button>
-                <Button className="w-full bg-ubike hover:bg-ubike/90 justify-center" onClick={() => scrollToSection('finder')}>
+                <Button className="w-full bg-ubike hover:bg-ubike/90 justify-center" onClick={() => scrollToSection('step-by-step-finder')}>
                   <Search className="h-4 w-4 mr-2" /> Buscar Moto
                 </Button>
               </div>
