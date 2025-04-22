@@ -27,7 +27,7 @@ interface ApiRequestData {
   "Cilindrada (CC)"?: number;
   "Precio"?: number;
   "Potencia (HP)"?: number;
-  //"Alto total"?: number;
+  // "Alto total"?: number;
   "Capacidad del tanque"?: number;
   // "Peso"?: number;
 }
