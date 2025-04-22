@@ -25,6 +25,7 @@ interface ApiRequestData {
   "Freno delantero"?: string;
   "Freno trasero"?: string;
   "Tipo de moto"?: string;
+  "tipo_uso"?: string;
   "Cilindrada (CC)"?: number;
   "Precio"?: number;
   "Potencia (HP)"?: number;
@@ -90,12 +91,14 @@ const StepByStepFinder = () => {
 
   const totalSteps = hasExperience ? 6 : 5;
 
+  /*
   // Map bike types based on usage
   const usageToMotorType = {
     "ciudad": "Naked",
     "carretera": "Deportiva",
     "todo-terreno": "Todo Terreno",
   };
+  */
 
   const marcas = [
     "Cualquiera", "Victory", "AKT", "Yamaha", "Honda", "TVS", "Suzuki",
@@ -193,6 +196,7 @@ const StepByStepFinder = () => {
         requestData["Peso"] = Math.round(dryWeightFromUser);
       }
       
+      /*
       // Add usage type if selected
       if (selectedUseType && selectedUseType !== "cualquiera") {
         const bikeType = usageToMotorType[selectedUseType as keyof typeof usageToMotorType];
@@ -200,6 +204,13 @@ const StepByStepFinder = () => {
           requestData["Tipo de moto"] = bikeType;
         }
       }
+      */
+
+      // Enviar tipo_uso directamente (la API lo manejará)
+      if (selectedUseType && selectedUseType !== "cualquiera") {
+        requestData["tipo_uso"] = selectedUseType;
+      }
+
       
       // Add transmission type if selected
       if (transmissionType && transmissionType !== "cualquiera") {
