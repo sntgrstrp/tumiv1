@@ -14,7 +14,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-// API required format interface
 interface ApiRequestData {
   "Marca"?: string;
   "Tipo de motor"?: string;
@@ -88,24 +87,18 @@ const StepByStepFinder = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   
-  // Basic information
   const [height, setHeight] = useState(170);
   const [weight, setWeight] = useState(70);
   const [budget, setBudget] = useState(6000000);
   
-  // Usage information
   const [selectedUseType, setSelectedUseType] = useState("");
   
-  // Transmission type
   const [transmissionType, setTransmissionType] = useState("");
   
-  // Experience level and advanced mode
   const [hasExperience, setHasExperience] = useState(false);
   
-  // Brand selection
   const [selectedBrand, setSelectedBrand] = useState("");
   
-  // Advanced specifications
   const [engineCC, setEngineCC] = useState("");
   const [power, setPower] = useState("");
   const [engineType, setEngineType] = useState("");
@@ -124,9 +117,7 @@ const StepByStepFinder = () => {
   ];  
 
   const handleNext = () => {
-    // Validate current step
     if (currentStep === 1) {
-      // Basic information validation
       if (!height || !budget) {
         toast({
           title: "Información incompleta",
@@ -155,7 +146,6 @@ const StepByStepFinder = () => {
       return;
     }
 
-    // If we're on the last step, handle search
     if (currentStep === totalSteps) {
       handleSearch();
       return;
@@ -168,7 +158,6 @@ const StepByStepFinder = () => {
     setCurrentStep(prev => Math.max(1, prev - 1));
   };
 
-  // Map our internal values to API expected format
   const mapTransmissionType = (type: string) => {
     switch(type) {
       case "manual": return "Mecanica";
@@ -199,22 +188,18 @@ const StepByStepFinder = () => {
     }
   };
 
-  // This function has been updated to directly handle API response
   const handleSearch = async () => {
     setLoading(true);
     
     try {
-      // Prepare request data according to API format
       let requestData: ApiRequestData = {
         "Precio": budget
       };
       
-      // Enviar tipo_uso directamente (la API lo manejará)
       if (selectedUseType && selectedUseType !== "cualquiera") {
         requestData["tipo_uso"] = selectedUseType;
       }
       
-      // Add transmission type if selected
       if (transmissionType && transmissionType !== "cualquiera") {
         const mappedTransmission = mapTransmissionType(transmissionType);
         if (mappedTransmission) {
@@ -222,12 +207,10 @@ const StepByStepFinder = () => {
         }
       }
       
-      // Add brand if selected
       if (selectedBrand && selectedBrand !== "no-preferencia") {
         requestData["Marca"] = selectedBrand;
       }
 
-      // Add advanced specifications if user has experience
       if (hasExperience) {
         if (engineCC) requestData["Cilindrada (CC)"] = parseInt(engineCC);
         if (power) requestData["Potencia (HP)"] = parseInt(power);
@@ -257,7 +240,6 @@ const StepByStepFinder = () => {
       
       console.log("Enviando datos:", requestData);
       
-      // Send request to API
       const response = await fetch("http://localhost:5000/recomendar", {
         method: "POST",
         headers: {
@@ -275,7 +257,6 @@ const StepByStepFinder = () => {
       const data = await response.json() as ApiResponse;
       console.log("Respuesta API:", data);
       
-      // Save the data in sessionStorage directly
       try {
         sessionStorage.setItem('motorcycleRecommendations', JSON.stringify(data));
         console.log("Recommendations saved to sessionStorage in handleSearch");
@@ -283,28 +264,21 @@ const StepByStepFinder = () => {
         console.error("Error saving recommendations:", err);
       }
       
-      // Create and dispatch the custom event
       const event = new CustomEvent('motorcycleRecommendationsReceived', { detail: data });
       window.dispatchEvent(event);
       
-      // Direct call to handleApiResponse if available
-      // @ts-ignore
       if (window.handleApiResponse) {
-        // @ts-ignore
         window.handleApiResponse(data);
       }
       
-      // Simulate loading for better UX
       setTimeout(() => {
         setLoading(false);
         
-        // Show success message
         toast({
           title: "¡Búsqueda exitosa!",
           description: "Hemos encontrado las mejores motocicletas para ti.",
         });
         
-        // Scroll to results section
         const resultsSection = document.getElementById('results');
         if (resultsSection) {
           resultsSection.scrollIntoView({ behavior: 'smooth' });
@@ -322,7 +296,6 @@ const StepByStepFinder = () => {
     }
   };
 
-  // Helper function for tooltips
   const InfoTooltip = ({ content }: { content: string }) => (
     <TooltipProvider>
       <Tooltip>
@@ -336,7 +309,6 @@ const StepByStepFinder = () => {
     </TooltipProvider>
   );
 
-  // Step 1: Basic Information
   const renderBasicInfoStep = () => (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center mb-6">
@@ -381,7 +353,6 @@ const StepByStepFinder = () => {
     </div>
   );
   
-  // Step 2: Usage Type
   const renderUsageTypeStep = () => (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center mb-6">
@@ -460,7 +431,6 @@ const StepByStepFinder = () => {
     </div>
   );
   
-  // Step 3: Transmission Type
   const renderTransmissionStep = () => (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center mb-6">
@@ -535,7 +505,6 @@ const StepByStepFinder = () => {
     </div>
   );
   
-  // Step 4: Brand Selection
   const renderBrandStep = () => (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center mb-6">
@@ -588,7 +557,6 @@ const StepByStepFinder = () => {
     </div>
   );
   
-  // Step 5: Advanced Specifications
   const renderAdvancedSpecsStep = () => (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center mb-6">
@@ -746,7 +714,6 @@ const StepByStepFinder = () => {
     </div>
   );
   
-  // Step 6/5: Summary
   const renderSummaryStep = () => {
     const getTechnicalInfo = () => {
       if (!hasExperience) return null;
@@ -785,3 +752,103 @@ const StepByStepFinder = () => {
         case "cualquiera": return "Sin preferencia específica";
         default: return "No especificado";
       }
+    };
+    
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-bold mb-2">Resumen de tus preferencias</h3>
+          <p className="text-muted-foreground">
+            Revisa tus selecciones y haz clic en "Buscar" para encontrar tu moto ideal.
+          </p>
+        </div>
+        
+        <div className="bg-muted/30 p-6 rounded-xl border">
+          <h4 className="font-medium mb-3">Datos básicos:</h4>
+          <ul className="space-y-1 text-sm">
+            <li><span className="text-muted-foreground">Altura:</span> {height} cm</li>
+            <li><span className="text-muted-foreground">Presupuesto:</span> ${budget.toLocaleString('es-CO')} COP</li>
+            <li><span className="text-muted-foreground">Uso principal:</span> {getUseType()}</li>
+            <li><span className="text-muted-foreground">Tipo de transmisión:</span> {getTransmission()}</li>
+            {selectedBrand && selectedBrand !== "no-preferencia" && (
+              <li><span className="text-muted-foreground">Marca preferida:</span> {selectedBrand}</li>
+            )}
+          </ul>
+          
+          {getTechnicalInfo()}
+        </div>
+        
+        <div className="text-center text-muted-foreground">
+          <p>¡Haz click en "Buscar" para ver las motos que mejor se adaptan a tus necesidades!</p>
+        </div>
+      </div>
+    );
+  };
+  
+  return (
+    <section className="py-12">
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <span className="ubike-gradient">Buscador Inteligente</span> de Motos
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Responde algunas preguntas para ayudarnos a encontrar la motocicleta perfecta para ti.
+            </p>
+          </div>
+          
+          <div className="bg-card rounded-xl shadow-sm border p-6">
+            <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
+            
+            <div className="min-h-[400px]">
+              {currentStep === 1 && renderBasicInfoStep()}
+              {currentStep === 2 && renderUsageTypeStep()}
+              {currentStep === 3 && renderTransmissionStep()}
+              {currentStep === 4 && renderBrandStep()}
+              {hasExperience && currentStep === 5 && renderAdvancedSpecsStep()}
+              {((!hasExperience && currentStep === 5) || (hasExperience && currentStep === 6)) && renderSummaryStep()}
+            </div>
+            
+            <div className="flex justify-between mt-8">
+              <Button 
+                variant="outline" 
+                onClick={handleBack} 
+                disabled={currentStep === 1 || loading}
+              >
+                <ChevronLeft className="mr-1 h-4 w-4" />
+                Atrás
+              </Button>
+              
+              <Button 
+                onClick={handleNext}
+                disabled={loading}
+              >
+                {currentStep === totalSteps ? (
+                  loading ? (
+                    <>
+                      <span className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                      Buscando...
+                    </>
+                  ) : (
+                    <>
+                      <Search className="mr-1 h-4 w-4" />
+                      Buscar
+                    </>
+                  )
+                ) : (
+                  <>
+                    Siguiente
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default StepByStepFinder;
