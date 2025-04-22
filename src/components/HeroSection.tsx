@@ -68,7 +68,8 @@ const HeroSection = () => {
             <div className="aspect-[3/4] bg-gradient-to-br from-ubike/20 to-ubike-blue/10 rounded-2xl glass-card p-1">
               <div className="h-full w-full rounded-xl overflow-hidden">
                 <img 
-                  src="https://ideogram.ai/assets/image/lossless/response/vbm6Y75VTZKSvmFvqKA9Eg" 
+                  //src="https://ideogram.ai/assets/image/lossless/response/vbm6Y75VTZKSvmFvqKA9Eg"
+                  src="https://w7.pngwing.com/pngs/57/594/png-transparent-suzuki-gsx-s1000-suzuki-gsx-series-motorcycle-sport-bike-suzuki-bike-exhaust-system-car-motorcycle.png" 
                   alt="Motocicleta moderna"
                   className="h-full w-full object-cover" 
                 />
