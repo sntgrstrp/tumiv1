@@ -43,22 +43,41 @@ const BikeCard = ({ bike }: BikeCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
   
-  // Manejo de error de imagen
+  // Function to get border color based on similarity
+  const getBorderStyle = (similarity: number) => {
+    if (similarity >= 90) {
+      return "border-2 border-[#4ade80] shadow-[0_0_15px_rgba(74,222,128,0.5)] hover:shadow-[0_0_20px_rgba(74,222,128,0.6)]";
+    } else if (similarity >= 70) {
+      return "border-2 border-[#fbbf24] shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_20px_rgba(251,191,36,0.6)]";
+    } else {
+      return "border-2 border-[#f87171] shadow-[0_0_15px_rgba(248,113,113,0.5)] hover:shadow-[0_0_20px_rgba(248,113,113,0.6)]";
+    }
+  };
+
+  // Function to enhance image resolution
+  const getEnhancedImageUrl = (url: string) => {
+    try {
+      const baseUrl = url.split('?')[0];
+      return `${baseUrl}?w=500&h=500&fit=pad&fm=webp&q=95`;
+    } catch (error) {
+      console.error("Error processing image URL:", error);
+      return url;
+    }
+  };
+
+  // Handle image error
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     console.log("Error al cargar imagen:", bike.image);
     e.currentTarget.src = "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
   };
 
-  // Formatear el precio con separador de miles
   const formattedPrice = bike.price ? bike.price.toLocaleString('es-CO') : 'N/A';
 
-  console.log("Renderizando BikeCard:", bike.id, bike.name, bike.brand);
-
   return (
-    <div className="glass-card rounded-xl overflow-hidden transition-all hover:translate-y-[-5px] group animate-fade-in relative">
+    <div className={`glass-card rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-5px] group animate-fade-in relative ${getBorderStyle(bike.compatibility)}`}>
       <div className="relative">
         <img 
-          src={bike.image} 
+          src={getEnhancedImageUrl(bike.image)} 
           alt={`${bike.brand} ${bike.name}`}
           className="w-full aspect-[4/3] object-cover object-center transition-transform group-hover:scale-105" 
           onError={handleImageError}
