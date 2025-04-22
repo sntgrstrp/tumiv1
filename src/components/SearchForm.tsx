@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +8,6 @@ import { SearchIcon, CheckCircle, UserRound, Ruler, Wallet, MapPin, Gauge, Wrenc
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
 
-// Define an interface for our request data
 interface RequestData {
   altura?: number;
   peso?: number;
@@ -26,7 +24,7 @@ interface RequestData {
   suspension_trasera?: string;
   capacidad_tanque?: number;
   alto_total?: number;
-  bike_weight?: number; // For the bike's weight to avoid confusion with user weight
+  bike_weight?: number;
 }
 
 const SearchForm = () => {
@@ -38,7 +36,6 @@ const SearchForm = () => {
   const [selectedUseType, setSelectedUseType] = useState("ciudad");
   const [selectedBrand, setSelectedBrand] = useState("");
 
-  // Campos avanzados
   const [engineCC, setEngineCC] = useState("");
   const [power, setPower] = useState("");
   const [engineType, setEngineType] = useState("");
@@ -54,19 +51,17 @@ const SearchForm = () => {
   const marcas = [
     "Cualquiera", "Victory", "AKT", "Yamaha", "Honda", "TVS", "Suzuki",
     "Bajaj", "Hero", "KTM", "SYM", "Benelli", "CF", "Kawasaki", "KYMCO"
-  ];  
+  ];
 
   const handleSearch = async (mode) => {
     setLoading(true);
     
     try {
-      // Preparar datos según el modo
       let requestData: RequestData = {
         presupuesto: budget
       };
       
       if (mode === "basic") {
-        // Calcular alto total sugerido en base a la altura del usuario
         const seatHeight = height * 0.43;
         const totalHeightFromUser = Math.round(seatHeight + 35);
         const bikeWeightFromUser = Math.round(weight + 60);
@@ -87,8 +82,6 @@ const SearchForm = () => {
           requestData.tipo_uso = selectedUseType;
         }
       } else {
-        // Modo avanzado
-        // Solo añadir campos con valor
         if (engineCC) requestData.cilindrada = parseInt(engineCC);
         if (power) requestData.potencia = parseInt(power);
         if (engineType) requestData.tipo_motor = engineType;
@@ -104,7 +97,6 @@ const SearchForm = () => {
       
       console.log("Enviando datos:", requestData);
       
-      // Enviar solicitud a la API
       const response = await fetch("http://localhost:5000/recomendar", {
         method: "POST",
         headers: {
@@ -120,16 +112,13 @@ const SearchForm = () => {
       const data = await response.json();
       console.log("Respuesta API:", data);
       
-      // Disparar evento con los resultados
       const customEvent = new CustomEvent('motorcycleRecommendationsReceived', {
         detail: data
       });
       window.dispatchEvent(customEvent);
       
-      // Simular un pequeño retardo para mostrar la animación de carga
       setTimeout(() => {
         setLoading(false);
-        // Desplazarse a la sección de resultados
         const resultsSection = document.getElementById('results');
         if (resultsSection) {
           resultsSection.scrollIntoView({ behavior: 'smooth' });
@@ -174,7 +163,6 @@ const SearchForm = () => {
               </TabsList>
             </div>
             
-            {/* Modo Básico */}
             <TabsContent value="basic" className="animate-fade-in">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
@@ -293,7 +281,6 @@ const SearchForm = () => {
               </div>
             </TabsContent>
             
-            {/* Modo Avanzado */}
             <TabsContent value="advanced" className="animate-fade-in">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
@@ -365,9 +352,11 @@ const SearchForm = () => {
                           <SelectValue placeholder="Freno delantero" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="disco">Disco</SelectItem>
-                          <SelectItem value="tambor">Tambor</SelectItem>
-                          <SelectItem value="abs">ABS</SelectItem>
+                          <SelectItem value="Disco">Disco</SelectItem>
+                          <SelectItem value="Disco ABS">Disco ABS</SelectItem>
+                          <SelectItem value="Disco especial">Disco especial</SelectItem>
+                          <SelectItem value="Disco lobulado">Disco lobulado</SelectItem>
+                          <SelectItem value="Tambor">Tambor</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -378,9 +367,10 @@ const SearchForm = () => {
                           <SelectValue placeholder="Freno trasero" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="disco">Disco</SelectItem>
-                          <SelectItem value="tambor">Tambor</SelectItem>
-                          <SelectItem value="abs">ABS</SelectItem>
+                          <SelectItem value="Disco">Disco</SelectItem>
+                          <SelectItem value="Disco ABS">Disco ABS</SelectItem>
+                          <SelectItem value="Tambor">Tambor</SelectItem>
+                          <SelectItem value="Campana">Campana</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -394,9 +384,10 @@ const SearchForm = () => {
                           <SelectValue placeholder="Suspensión delantera" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="telescopica">Telescópica</SelectItem>
-                          <SelectItem value="invertida">Invertida</SelectItem>
-                          <SelectItem value="horquilla">Horquilla</SelectItem>
+                          <SelectItem value="Horquilla Telescópica">Horquilla Telescópica</SelectItem>
+                          <SelectItem value="Telescópica Hidráulica">Telescópica Hidráulica</SelectItem>
+                          <SelectItem value="Telescópica Invertida">Telescópica Invertida</SelectItem>
+                          <SelectItem value="Otro">Otro</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -407,9 +398,11 @@ const SearchForm = () => {
                           <SelectValue placeholder="Suspensión trasera" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="monoamortiguador">Monoamortiguador</SelectItem>
-                          <SelectItem value="doble-amortiguador">Doble Amortiguador</SelectItem>
-                          <SelectItem value="progresiva">Progresiva</SelectItem>
+                          <SelectItem value="Monoamortiguador">Monoamortiguador</SelectItem>
+                          <SelectItem value="Brazo Oscilante">Brazo Oscilante</SelectItem>
+                          <SelectItem value="Doble Amortiguador">Doble Amortiguador</SelectItem>
+                          <SelectItem value="Sistema Avanzado">Sistema Avanzado</SelectItem>
+                          <SelectItem value="Otro">Otro</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
