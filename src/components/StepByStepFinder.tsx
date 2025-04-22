@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +31,34 @@ interface ApiRequestData {
   //"Alto total"?: number;
   "Capacidad del tanque"?: number;
   // "Peso"?: number;
+}
+
+interface ApiResponse {
+  status: string;
+  data: BikeRecommendation[] | null;
+  message: string;
+}
+
+interface BikeRecommendation {
+  similitud: number;
+  Marca: string;
+  Modelo: string;
+  "Tipo de moto": string;
+  Precio: number;
+  "Cilindrada (CC)": number;
+  Peso: number;
+  "Potencia (HP)": number;
+  "Alto total": number;
+  "Capacidad del tanque": number;
+  "Tipo de motor": string;
+  "Tipo de transmisión": string;
+  "Suspensión delantera": string;
+  "Suspensión trasera": string;
+  "Freno delantero": string;
+  "Freno trasero": string;
+  Descripción: string;
+  Imagen: string;
+  Enlace: string;
 }
 
 interface StepProps {
@@ -90,15 +117,6 @@ const StepByStepFinder = () => {
   //const [bikeWeight, setBikeWeight] = useState("");
 
   const totalSteps = hasExperience ? 6 : 5;
-
-  /*
-  // Map bike types based on usage
-  const usageToMotorType = {
-    "ciudad": "Naked",
-    "carretera": "Deportiva",
-    "todo-terreno": "Todo Terreno",
-  };
-  */
 
   const marcas = [
     "Cualquiera", "Victory", "AKT", "Yamaha", "Honda", "TVS", "Suzuki",
@@ -181,6 +199,7 @@ const StepByStepFinder = () => {
     }
   };
 
+  // This function has been updated to directly handle API response
   const handleSearch = async () => {
     setLoading(true);
     
@@ -190,29 +209,10 @@ const StepByStepFinder = () => {
         "Precio": budget
       };
       
-      /*
-      // Convertir peso del usuario en peso sugerido de la moto (aprox. 120%)
-      if (weight) {
-        const dryWeightFromUser = weight * 1.2;
-        requestData["Peso"] = Math.round(dryWeightFromUser);
-      }
-        */
-      
-      /*
-      // Add usage type if selected
-      if (selectedUseType && selectedUseType !== "cualquiera") {
-        const bikeType = usageToMotorType[selectedUseType as keyof typeof usageToMotorType];
-        if (bikeType) {
-          requestData["Tipo de moto"] = bikeType;
-        }
-      }
-      */
-
       // Enviar tipo_uso directamente (la API lo manejará)
       if (selectedUseType && selectedUseType !== "cualquiera") {
         requestData["tipo_uso"] = selectedUseType;
       }
-
       
       // Add transmission type if selected
       if (transmissionType && transmissionType !== "cualquiera") {
@@ -226,14 +226,6 @@ const StepByStepFinder = () => {
       if (selectedBrand && selectedBrand !== "no-preferencia") {
         requestData["Marca"] = selectedBrand;
       }
-      
-      /*
-      // Convertir altura del usuario en alto total de la moto (aprox. 65%)
-      if (height) {
-        const totalHeightFromUser = height * 0.65;
-        requestData["Alto total"] = Math.round(totalHeightFromUser);
-      }
-      */
 
       // Add advanced specifications if user has experience
       if (hasExperience) {
@@ -260,7 +252,6 @@ const StepByStepFinder = () => {
           requestData["Suspensión trasera"] = mapSuspensionType(rearSuspension);
         }
         
-        //if (bikeWeight) requestData["Peso"] = parseInt(bikeWeight);
         if (tankCapacity) requestData["Capacidad del tanque"] = parseFloat(tankCapacity);
       }
       
@@ -281,8 +272,27 @@ const StepByStepFinder = () => {
         throw new Error(`Error: ${response.status} - ${errorData.message || 'Error desconocido'}`);
       }
       
-      const data = await response.json();
+      const data = await response.json() as ApiResponse;
       console.log("Respuesta API:", data);
+      
+      // Save the data in sessionStorage directly
+      try {
+        sessionStorage.setItem('motorcycleRecommendations', JSON.stringify(data));
+        console.log("Recommendations saved to sessionStorage in handleSearch");
+      } catch (err) {
+        console.error("Error saving recommendations:", err);
+      }
+      
+      // Create and dispatch the custom event
+      const event = new CustomEvent('motorcycleRecommendationsReceived', { detail: data });
+      window.dispatchEvent(event);
+      
+      // Direct call to handleApiResponse if available
+      // @ts-ignore
+      if (window.handleApiResponse) {
+        // @ts-ignore
+        window.handleApiResponse(data);
+      }
       
       // Simulate loading for better UX
       setTimeout(() => {
@@ -348,7 +358,7 @@ const StepByStepFinder = () => {
             min={150} 
             max={210} 
             step={1} 
-            //onValueChange={(value) => setHeight(value[0])}
+            onValueChange={(value) => setHeight(value[0])}
             className="py-4"
           />
         </div>
@@ -775,131 +785,3 @@ const StepByStepFinder = () => {
         case "cualquiera": return "Sin preferencia específica";
         default: return "No especificado";
       }
-    };
-    
-    return (
-      <div className="space-y-6 animate-fade-in">
-        <div className="text-center mb-6">
-          <h3 className="text-xl font-bold mb-2">Resumen</h3>
-          <p className="text-muted-foreground">
-            ¡Listo! Ya tenemos toda la información necesaria.
-            Revisa los detalles de tu búsqueda y haz clic en "Buscar mi moto" para encontrar las mejores opciones para ti.
-          </p>
-        </div>
-        
-        <div className="bg-muted/30 p-6 rounded-xl">
-          <h4 className="font-medium mb-3">Resumen de tu búsqueda:</h4>
-          <ul className="space-y-2">
-            <li><span className="text-muted-foreground">Tu altura:</span> {height} cm</li>
-            <li><span className="text-muted-foreground">Presupuesto:</span> ${budget.toLocaleString('es-CO')}</li>
-            <li><span className="text-muted-foreground">Uso principal:</span> {getUseType()}</li>
-            <li><span className="text-muted-foreground">Tipo de transmisión:</span> {getTransmission()}</li>
-            {selectedBrand && selectedBrand !== "no-preferencia" && <li><span className="text-muted-foreground">Marca preferida:</span> {selectedBrand}</li>}
-          </ul>
-          
-          {getTechnicalInfo()}
-        </div>
-      </div>
-    );
-  };
-  
-  // Render current step content
-  const renderStepContent = () => {
-    switch(currentStep) {
-      case 1:
-        return renderBasicInfoStep();
-      case 2:
-        return renderUsageTypeStep();
-      case 3:
-        return renderTransmissionStep();
-      case 4:
-        return renderBrandStep();
-      case 5:
-        return hasExperience ? renderAdvancedSpecsStep() : renderSummaryStep();
-      case 6:
-        return renderSummaryStep();
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <section id="finder" className="py-16 relative">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="ubike-gradient">Encuentra</span> Tu Moto Ideal
-          </h2>
-          <p className="text-muted-foreground">
-            Responde algunas preguntas y te recomendaremos las motocicletas que mejor se adapten a ti.
-          </p>
-        </div>
-        
-        <div className="max-w-3xl mx-auto glass-card rounded-2xl p-8">
-          <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
-          
-          {renderStepContent()}
-          
-          <div className="mt-8 flex justify-between">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              className="min-w-[100px]"
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" /> Atrás
-            </Button>
-            
-            <Button 
-              onClick={handleNext}
-              disabled={loading}
-              className={`min-w-[150px] ${
-                currentStep === totalSteps 
-                  ? "bg-ubike hover:bg-ubike/90" 
-                  : "bg-ubike-blue hover:bg-ubike-blue/90"
-              } text-white`}
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="relative">
-                    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-l-2 border-white absolute"></div>
-                    <Bike className="h-4 w-4 animate-bounce" />
-                  </div>
-                  <span className="ml-3">Buscando...</span>
-                </div>
-              ) : (
-                <>
-                  {currentStep === totalSteps ? (
-                    <>
-                      <Search className="mr-2 h-4 w-4" /> Buscar mi moto
-                    </>
-                  ) : (
-                    <>
-                      Siguiente <ChevronRight className="h-4 w-4 ml-1" />
-                    </>
-                  )}
-                </>
-              )}
-            </Button>
-          </div>
-          
-          {currentStep < totalSteps && (
-            <div className="mt-6 text-center">
-              <div className="text-xs text-muted-foreground">
-                Paso {currentStep} de {totalSteps}
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <div className="mt-8 text-center text-sm text-muted-foreground flex items-center justify-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-ubike" />
-          Tus datos están seguros y solo se utilizan para mejorar las recomendaciones
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default StepByStepFinder;
-

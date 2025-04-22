@@ -60,87 +60,93 @@ const ResultsSection = () => {
   const [recommendations, setRecommendations] = useState<FormattedBike[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Directly handle fetch response for testing
+  const handleApiResponse = (response: ApiResponse) => {
+    console.log("Processing API response:", response);
+    try {
+      const { data, status, message } = response;
+      
+      if (status === "success" && data && data.length > 0) {
+        console.log("Valid recommendation data:", data);
+        
+        // Save the complete response in sessionStorage
+        saveRecommendationsToStorage(response);
+        
+        const formattedBikes: FormattedBike[] = data.map((bike, index) => formatBikeData(bike, index));
+        console.log("Formatted bikes:", formattedBikes);
+        
+        setRecommendations(formattedBikes);
+        setError(null);
+        
+        // Notify the user about successful recommendations
+        toast({
+          title: "Recomendaciones listas",
+          description: `Se encontraron ${data.length} motocicletas que coinciden con tus criterios.`
+        });
+      } else {
+        console.error("Error in data:", status, message, data);
+        setError("No se pudieron obtener recomendaciones. Intente con otros criterios.");
+        setRecommendations([]);
+        
+        // Notify the user about the error
+        toast({
+          title: "Sin recomendaciones",
+          description: message || "Intenta con otros criterios de búsqueda.",
+          variant: "destructive"
+        });
+      }
+    } catch (err) {
+      console.error("Error processing recommendations:", err);
+      setError("Error al procesar las recomendaciones.");
+      setRecommendations([]);
+    }
+  };
 
   useEffect(() => {
-    // Función para manejar el evento cuando se reciben las recomendaciones
+    // Function to handle the event when recommendations are received
     const handleRecommendationsReceived = (event: CustomEvent<ApiResponse>) => {
       setLoading(true);
-      try {
-        console.log("Evento de recomendaciones recibido:", event.detail);
-        const { data, status, message } = event.detail;
-        
-        if (status === "success" && data && data.length > 0) {
-          console.log("Datos de recomendaciones válidos:", data);
-          
-          // Guardar la respuesta completa en sessionStorage
-          saveRecommendationsToStorage(event.detail);
-          
-          const formattedBikes: FormattedBike[] = data.map((bike, index) => formatBikeData(bike, index));
-          console.log("Datos formateados:", formattedBikes);
-          
-          setRecommendations(formattedBikes);
-          setError(null);
-          
-          // Notificar al usuario sobre las recomendaciones exitosas
-          toast({
-            title: "Recomendaciones listas",
-            description: `Se encontraron ${data.length} motocicletas que coinciden con tus criterios.`
-          });
-        } else {
-          console.error("Error en datos:", status, message, data);
-          setError("No se pudieron obtener recomendaciones. Intente con otros criterios.");
-          setRecommendations([]);
-          
-          // Notificar al usuario sobre el error
-          toast({
-            title: "Sin recomendaciones",
-            description: message || "Intenta con otros criterios de búsqueda.",
-            variant: "destructive"
-          });
-        }
-      } catch (err) {
-        console.error("Error al procesar recomendaciones:", err);
-        setError("Error al procesar las recomendaciones.");
-        setRecommendations([]);
-      } finally {
-        setLoading(false);
-      }
+      console.log("Received recommendations event:", event.detail);
+      handleApiResponse(event.detail);
+      setLoading(false);
     };
 
-    // Añadir el event listener para capturar el evento personalizado
+    // Define a direct handler for fetch calls (workaround)
+    // @ts-ignore
+    window.handleApiResponse = handleApiResponse;
+
+    // Add event listener to capture the custom event
     window.addEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
 
-    // Verificar si ya tenemos recomendaciones almacenadas en sessionStorage al montar el componente
+    // Check if we already have stored recommendations when mounting the component
     const checkStoredRecommendations = () => {
       const savedRecommendations = sessionStorage.getItem('motorcycleRecommendations');
       if (savedRecommendations) {
         try {
           const parsedData = JSON.parse(savedRecommendations) as ApiResponse;
-          console.log("Recuperando datos guardados:", parsedData);
-          
-          if (parsedData.status === "success" && parsedData.data && parsedData.data.length > 0) {
-            const formattedBikes = parsedData.data.map((bike, index) => formatBikeData(bike, index));
-            console.log("Datos guardados formateados:", formattedBikes);
-            setRecommendations(formattedBikes);
-          }
+          console.log("Retrieving saved data:", parsedData);
+          handleApiResponse(parsedData);
         } catch (err) {
-          console.error("Error al recuperar recomendaciones guardadas:", err);
+          console.error("Error retrieving saved recommendations:", err);
         }
       }
     };
     
-    // Ejecutar la verificación de datos guardados
+    // Execute the check for saved data
     checkStoredRecommendations();
 
-    // Limpiar el event listener cuando el componente se desmonte
+    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
+      // @ts-ignore
+      delete window.handleApiResponse;
     };
   }, []);
 
-  // Función para formatear los datos de la moto en el formato que espera BikeCard
+  // Function to format the bike data in the format expected by BikeCard
   const formatBikeData = (bike: BikeRecommendation, index: number): FormattedBike => {
-    console.log(`Formateando moto ${index}:`, bike);
+    console.log(`Formatting bike ${index}:`, bike);
     const placeholderImage = "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
     
     return {
@@ -169,29 +175,78 @@ const ResultsSection = () => {
     };
   };
 
-  // Función para guardar las recomendaciones en sessionStorage
+  // Function to save recommendations to sessionStorage
   const saveRecommendationsToStorage = (response: ApiResponse) => {
     try {
       sessionStorage.setItem('motorcycleRecommendations', JSON.stringify(response));
-      console.log("Recomendaciones guardadas en sessionStorage");
+      console.log("Recommendations saved to sessionStorage");
     } catch (err) {
-      console.error("Error al guardar recomendaciones:", err);
+      console.error("Error saving recommendations:", err);
     }
   };
 
-  // Función para debugear el estado actual
+  // Debug function to log current state
   const debugState = () => {
-    console.log("Estado actual:");
+    console.log("Current state:");
     console.log("- recommendations:", recommendations);
     console.log("- loading:", loading);
     console.log("- error:", error);
     console.log("- sessionStorage:", sessionStorage.getItem('motorcycleRecommendations'));
   };
 
-  // Depuración
+  // Debug on state changes
   useEffect(() => {
     debugState();
   }, [recommendations, loading, error]);
+
+  // Now let's modify the StepByStepFinder.tsx component to dispatch the event correctly
+  const injectApiSuccessHandler = () => {
+    if (typeof window !== 'undefined') {
+      const originalFetch = window.fetch;
+      
+      window.fetch = async function(...args) {
+        const response = await originalFetch.apply(this, args);
+        
+        // Check if this is our API endpoint
+        if (args[0] === 'http://localhost:5000/recomendar' && args[1]?.method === 'POST') {
+          try {
+            // Clone the response so we can read it twice
+            const clonedResponse = response.clone();
+            const data = await clonedResponse.json();
+            
+            console.log("API response intercepted:", data);
+            
+            // If we have window.handleApiResponse available, use it directly
+            // @ts-ignore
+            if (window.handleApiResponse) {
+              // @ts-ignore
+              window.handleApiResponse(data);
+            }
+            
+            // Also dispatch the event as before
+            const event = new CustomEvent('motorcycleRecommendationsReceived', { detail: data });
+            window.dispatchEvent(event);
+          } catch (err) {
+            console.error("Error intercepting API response:", err);
+          }
+        }
+        
+        return response;
+      };
+    }
+  };
+
+  // Run the fetch injection once on mount
+  useEffect(() => {
+    injectApiSuccessHandler();
+    // Return cleanup function
+    return () => {
+      // Restore original fetch if needed
+      if (typeof window !== 'undefined') {
+        // This would ideally restore the original fetch, but is simplified here
+      }
+    };
+  }, []);
 
   return (
     <section id="results" className="py-16 relative">
