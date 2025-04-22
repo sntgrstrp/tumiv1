@@ -27,9 +27,7 @@ interface ApiRequestData {
   "Cilindrada (CC)"?: number;
   "Precio"?: number;
   "Potencia (HP)"?: number;
-  // "Alto total"?: number;
   "Capacidad del tanque"?: number;
-  // "Peso"?: number;
 }
 
 interface ApiResponse {
@@ -107,8 +105,7 @@ const StepByStepFinder = () => {
   const [frontBrake, setFrontBrake] = useState("");
   const [rearBrake, setRearBrake] = useState("");
   const [tankCapacity, setTankCapacity] = useState("");
-  //const [bikeWeight, setBikeWeight] = useState("");
-
+  
   const totalSteps = hasExperience ? 6 : 5;
 
   const marcas = [
@@ -170,21 +167,33 @@ const StepByStepFinder = () => {
   const mapBrakeType = (type: string) => {
     switch(type) {
       case "disco": return "Disco";
+      case "disco-abs": return "Disco ABS";
+      case "disco-especial": return "Disco especial";
+      case "disco-lobulado": return "Disco lobulado";
       case "tambor": return "Tambor";
-      case "abs": return "Disco ABS";
+      case "campana": return "Campana";
       default: return undefined;
     }
   };
 
-  const mapSuspensionType = (type: string) => {
-    switch(type) {
-      case "telescopica": return "Telescópica";
-      case "invertida": return "Invertida";
-      case "horquilla": return "Horquilla";
-      case "monoamortiguador": return "Monoamortiguador";
-      case "doble-amortiguador": return "Doble Amortiguador";
-      case "progresiva": return "Progresiva";
-      default: return undefined;
+  const mapSuspensionType = (type: string, isFront: boolean) => {
+    if (isFront) {
+      switch(type) {
+        case "telescopica": return "Horquilla Telescópica";
+        case "telescopica-hidraulica": return "Telescópica Hidráulica";
+        case "telescopica-invertida": return "Telescópica Invertida";
+        case "otro-susp-delantera": return "Otro";
+        default: return undefined;
+      }
+    } else {
+      switch(type) {
+        case "monoamortiguador": return "Monoamortiguador";
+        case "brazo-oscilante": return "Brazo Oscilante";
+        case "doble-amortiguador": return "Doble Amortiguador";
+        case "sistema-avanzado": return "Sistema Avanzado";
+        case "otro-susp-trasera": return "Otro";
+        default: return undefined;
+      }
     }
   };
 
@@ -228,11 +237,11 @@ const StepByStepFinder = () => {
         }
         
         if (frontSuspension && frontSuspension !== "no-preferencia") {
-          requestData["Suspensión delantera"] = mapSuspensionType(frontSuspension);
+          requestData["Suspensión delantera"] = mapSuspensionType(frontSuspension, true);
         }
         
         if (rearSuspension && rearSuspension !== "no-preferencia") {
-          requestData["Suspensión trasera"] = mapSuspensionType(rearSuspension);
+          requestData["Suspensión trasera"] = mapSuspensionType(rearSuspension, false);
         }
         
         if (tankCapacity) requestData["Capacidad del tanque"] = parseFloat(tankCapacity);
@@ -614,9 +623,10 @@ const StepByStepFinder = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="no-preferencia">Sin preferencia</SelectItem>
-                <SelectItem value="telescopica">Telescópica</SelectItem>
-                <SelectItem value="invertida">Invertida</SelectItem>
-                <SelectItem value="horquilla">Horquilla</SelectItem>
+                <SelectItem value="telescopica">Horquilla Telescópica</SelectItem>
+                <SelectItem value="telescopica-hidraulica">Telescópica Hidráulica</SelectItem>
+                <SelectItem value="telescopica-invertida">Telescópica Invertida</SelectItem>
+                <SelectItem value="otro-susp-delantera">Otro</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -632,8 +642,10 @@ const StepByStepFinder = () => {
               <SelectContent>
                 <SelectItem value="no-preferencia">Sin preferencia</SelectItem>
                 <SelectItem value="monoamortiguador">Monoamortiguador</SelectItem>
+                <SelectItem value="brazo-oscilante">Brazo Oscilante</SelectItem>
                 <SelectItem value="doble-amortiguador">Doble Amortiguador</SelectItem>
-                <SelectItem value="progresiva">Progresiva</SelectItem>
+                <SelectItem value="sistema-avanzado">Sistema Avanzado</SelectItem>
+                <SelectItem value="otro-susp-trasera">Otro</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -656,8 +668,10 @@ const StepByStepFinder = () => {
               <SelectContent>
                 <SelectItem value="no-preferencia">Sin preferencia</SelectItem>
                 <SelectItem value="disco">Disco</SelectItem>
+                <SelectItem value="disco-abs">Disco ABS</SelectItem>
+                <SelectItem value="disco-especial">Disco especial</SelectItem>
+                <SelectItem value="disco-lobulado">Disco lobulado</SelectItem>
                 <SelectItem value="tambor">Tambor</SelectItem>
-                <SelectItem value="abs">ABS</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -673,8 +687,9 @@ const StepByStepFinder = () => {
               <SelectContent>
                 <SelectItem value="no-preferencia">Sin preferencia</SelectItem>
                 <SelectItem value="disco">Disco</SelectItem>
+                <SelectItem value="disco-abs">Disco ABS</SelectItem>
                 <SelectItem value="tambor">Tambor</SelectItem>
-                <SelectItem value="abs">ABS</SelectItem>
+                <SelectItem value="campana">Campana</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -724,8 +739,8 @@ const StepByStepFinder = () => {
           <ul className="space-y-1 text-sm">
             {engineCC && <li><span className="text-muted-foreground">Cilindrada:</span> {engineCC} cc</li>}
             {power && <li><span className="text-muted-foreground">Potencia:</span> {power} HP</li>}
-            {frontSuspension && frontSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión delantera:</span> {mapSuspensionType(frontSuspension)}</li>}
-            {rearSuspension && rearSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión trasera:</span> {mapSuspensionType(rearSuspension)}</li>}
+            {frontSuspension && frontSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión delantera:</span> {mapSuspensionType(frontSuspension, true)}</li>}
+            {rearSuspension && rearSuspension !== "no-preferencia" && <li><span className="text-muted-foreground">Suspensión trasera:</span> {mapSuspensionType(rearSuspension, false)}</li>}
             {frontBrake && frontBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos delanteros:</span> {mapBrakeType(frontBrake)}</li>}
             {rearBrake && rearBrake !== "no-preferencia" && <li><span className="text-muted-foreground">Frenos traseros:</span> {mapBrakeType(rearBrake)}</li>}
             {tankCapacity && <li><span className="text-muted-foreground">Capacidad mínima del tanque:</span> {tankCapacity} L</li>}
@@ -786,7 +801,7 @@ const StepByStepFinder = () => {
   };
   
   return (
-    <section id="step-by-step-finder" className="py-12">
+    <section id="finder" className="py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
