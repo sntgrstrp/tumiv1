@@ -45,9 +45,9 @@ const BikeCard = ({ bike }: BikeCardProps) => {
   
   // Function to get border color based on similarity
   const getBorderStyle = (similarity: number) => {
-    if (similarity >= 90) {
+    if (similarity >= 70) {
       return "border-2 border-[#4ade80] shadow-[0_0_15px_rgba(74,222,128,0.5)] hover:shadow-[0_0_20px_rgba(74,222,128,0.6)]";
-    } else if (similarity >= 70) {
+    } else if (similarity >= 50) {
       return "border-2 border-[#fbbf24] shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_20px_rgba(251,191,36,0.6)]";
     } else {
       return "border-2 border-[#f87171] shadow-[0_0_15px_rgba(248,113,113,0.5)] hover:shadow-[0_0_20px_rgba(248,113,113,0.6)]";
