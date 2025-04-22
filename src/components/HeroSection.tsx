@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Search } from "lucide-react";
 
@@ -64,17 +63,12 @@ const HeroSection = () => {
         </div>
         
         <div className="relative order-first md:order-last flex justify-center">
-          <div className="w-full max-w-md relative animate-float">
-            <div className="aspect-[3/4] bg-gradient-to-br from-ubike/20 to-ubike-blue/10 rounded-2xl glass-card p-1">
-              <div className="h-full w-full rounded-xl overflow-hidden">
-                <img 
-                  //src="https://ideogram.ai/assets/image/lossless/response/vbm6Y75VTZKSvmFvqKA9Eg"
-                  src="https://images.squarespace-cdn.com/content/v1/65441add9f1c47170e484373/98b53ed4-59ca-403f-a55f-93ef6cd315ac/bike.png?format=1000w" 
-                  alt="Motocicleta moderna"
-                  className="h-full w-full object-cover" 
-                />
-              </div>
-            </div>
+          <div className="w-full max-w-lg relative animate-float">
+            <img 
+              src="https://images.squarespace-cdn.com/content/v1/65441add9f1c47170e484373/98b53ed4-59ca-403f-a55f-93ef6cd315ac/bike.png?format=1000w" 
+              alt="Motocicleta moderna"
+              className="h-full w-full object-contain" 
+            />
             <div className="absolute -bottom-6 -right-6 p-4 glass-card rounded-xl max-w-[200px]">
               <div className="text-xs text-muted-foreground">Compatibilidad</div>
               <div className="text-lg font-bold mt-1 text-ubike">98% Match</div>
