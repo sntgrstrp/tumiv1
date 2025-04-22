@@ -1,59 +1,69 @@
 
-import { Check, Minus, Settings } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+
+interface BikeRecommendation {
+  similitud: number;
+  Marca: string;
+  Modelo: string;
+  "Tipo de moto": string;
+  Precio: number;
+  "Cilindrada (CC)": number;
+  Peso: number;
+  "Potencia (HP)": number;
+  "Alto total": number;
+  "Capacidad del tanque": number;
+  "Tipo de motor": string;
+  "Tipo de transmisión": string;
+  "Suspensión delantera": string;
+  "Suspensión trasera": string;
+  "Freno delantero": string;
+  "Freno trasero": string;
+  Descripción: string;
+  Imagen: string;
+  Enlace: string;
+}
 
 const ComparisonSection = () => {
-  // Sample comparison data
-  const bikes = [
-    {
-      name: "MT-07",
-      brand: "Yamaha",
-      price: 7299,
-      image: "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      compatibility: 98,
-      engine: "689cc",
-      power: "73.4 CV",
-      torque: "67 Nm",
-      weight: "184 kg",
-      seat_height: "805 mm",
-      fuel: "14 L",
-      abs: true,
-      traction_control: false,
-      riding_modes: false
-    },
-    {
-      name: "Z650",
-      brand: "Kawasaki",
-      price: 7199,
-      image: "https://images.unsplash.com/photo-1549027032-1977ba8a1b15?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      compatibility: 94,
-      engine: "649cc",
-      power: "68 CV",
-      torque: "64 Nm",
-      weight: "187 kg",
-      seat_height: "790 mm",
-      fuel: "15 L",
-      abs: true,
-      traction_control: false,
-      riding_modes: false
-    },
-    {
-      name: "CB650R",
-      brand: "Honda",
-      price: 8700,
-      image: "https://images.unsplash.com/photo-1601989307097-7365eb41d031?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      compatibility: 92,
-      engine: "649cc",
-      power: "95 CV",
-      torque: "64 Nm",
-      weight: "202 kg",
-      seat_height: "810 mm",
-      fuel: "15.4 L",
-      abs: true,
-      traction_control: true,
-      riding_modes: true
-    }
-  ];
+  const [bikes, setBikes] = useState<BikeRecommendation[]>([]);
+
+  useEffect(() => {
+    const loadBikes = () => {
+      const savedRecommendations = sessionStorage.getItem('motorcycleRecommendations');
+      if (savedRecommendations) {
+        try {
+          const parsedData = JSON.parse(savedRecommendations);
+          if (parsedData.status === "success" && parsedData.data && parsedData.data.length > 0) {
+            // Tomar solo las primeras 3 motos para la comparación
+            setBikes(parsedData.data.slice(0, 3));
+          }
+        } catch (err) {
+          console.error("Error loading bike recommendations:", err);
+        }
+      }
+    };
+
+    // Cargar las motos inicialmente
+    loadBikes();
+
+    // Escuchar por nuevas recomendaciones
+    const handleNewRecommendations = (event: CustomEvent) => {
+      if (event.detail && event.detail.data) {
+        setBikes(event.detail.data.slice(0, 3));
+      }
+    };
+
+    window.addEventListener('motorcycleRecommendationsReceived' as any, handleNewRecommendations as EventListener);
+
+    return () => {
+      window.removeEventListener('motorcycleRecommendationsReceived' as any, handleNewRecommendations as EventListener);
+    };
+  }, []);
+
+  if (bikes.length === 0) {
+    return null; // No mostrar la sección si no hay motos para comparar
+  }
 
   return (
     <section id="comparison" className="py-20">
@@ -78,17 +88,17 @@ const ComparisonSection = () => {
                       <div className="relative w-16 h-16 mb-3 mx-auto">
                         <div className="w-full h-full rounded-full overflow-hidden">
                           <img 
-                            src={bike.image} 
-                            alt={bike.name}
+                            src={bike.Imagen || "https://images.unsplash.com/photo-1558981852-426c6c22a060?q=80&w=200"} 
+                            alt={bike.Modelo}
                             className="w-full h-full object-cover"
                           />
                         </div>
                         <div className="absolute -bottom-2 -right-2 bg-ubike text-white text-xs font-medium rounded-full w-8 h-8 flex items-center justify-center">
-                          {bike.compatibility}%
+                          {Math.round(bike.similitud)}%
                         </div>
                       </div>
-                      <div className="font-bold text-white">{bike.name}</div>
-                      <div className="text-sm text-muted-foreground">{bike.brand}</div>
+                      <div className="font-bold text-white">{bike.Modelo}</div>
+                      <div className="text-sm text-muted-foreground">{bike.Marca}</div>
                     </div>
                   </th>
                 ))}
@@ -99,75 +109,66 @@ const ComparisonSection = () => {
                 <td className="p-4 font-medium text-muted-foreground">Precio</td>
                 {bikes.map((bike, index) => (
                   <td key={index} className="p-4 text-center font-bold">
-                    {bike.price.toLocaleString('es-ES')} €
+                    {bike.Precio.toLocaleString('es-CO')} COP
                   </td>
                 ))}
               </tr>
               <tr className="border-b border-white/10">
                 <td className="p-4 font-medium text-muted-foreground">Motor</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">{bike.engine}</td>
+                  <td key={index} className="p-4 text-center">{bike["Cilindrada (CC)"]} cc</td>
                 ))}
               </tr>
               <tr className="border-b border-white/10">
                 <td className="p-4 font-medium text-muted-foreground">Potencia</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">{bike.power}</td>
-                ))}
-              </tr>
-              <tr className="border-b border-white/10">
-                <td className="p-4 font-medium text-muted-foreground">Par Motor</td>
-                {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">{bike.torque}</td>
+                  <td key={index} className="p-4 text-center">{bike["Potencia (HP)"]} HP</td>
                 ))}
               </tr>
               <tr className="border-b border-white/10">
                 <td className="p-4 font-medium text-muted-foreground">Peso</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">{bike.weight}</td>
+                  <td key={index} className="p-4 text-center">{bike.Peso} kg</td>
                 ))}
               </tr>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-medium text-muted-foreground">Altura Asiento</td>
+                <td className="p-4 font-medium text-muted-foreground">Altura Total</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">{bike.seat_height}</td>
+                  <td key={index} className="p-4 text-center">{bike["Alto total"]} mm</td>
                 ))}
               </tr>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-medium text-muted-foreground">Depósito</td>
+                <td className="p-4 font-medium text-muted-foreground">Tipo de Motor</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">{bike.fuel}</td>
+                  <td key={index} className="p-4 text-center">{bike["Tipo de motor"]}</td>
                 ))}
               </tr>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-medium text-muted-foreground">ABS</td>
+                <td className="p-4 font-medium text-muted-foreground">Transmisión</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">
-                    {bike.abs ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <Minus className="h-5 w-5 text-red-500 mx-auto" />}
-                  </td>
+                  <td key={index} className="p-4 text-center">{bike["Tipo de transmisión"]}</td>
                 ))}
               </tr>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-medium text-muted-foreground">Control de Tracción</td>
+                <td className="p-4 font-medium text-muted-foreground">Freno Delantero</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">
-                    {bike.traction_control ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <Minus className="h-5 w-5 text-red-500 mx-auto" />}
-                  </td>
+                  <td key={index} className="p-4 text-center">{bike["Freno delantero"]}</td>
                 ))}
               </tr>
-              <tr>
-                <td className="p-4 font-medium text-muted-foreground">Modos de Conducción</td>
+              <tr className="border-b border-white/10">
+                <td className="p-4 font-medium text-muted-foreground">Freno Trasero</td>
                 {bikes.map((bike, index) => (
-                  <td key={index} className="p-4 text-center">
-                    {bike.riding_modes ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <Minus className="h-5 w-5 text-red-500 mx-auto" />}
-                  </td>
+                  <td key={index} className="p-4 text-center">{bike["Freno trasero"]}</td>
                 ))}
               </tr>
               <tr>
                 <td className="p-4"></td>
                 {bikes.map((bike, index) => (
                   <td key={index} className="p-4 text-center">
-                    <Button className="bg-ubike hover:bg-ubike/90 w-full">
+                    <Button 
+                      className="bg-ubike hover:bg-ubike/90 w-full"
+                      onClick={() => window.open(bike.Enlace, '_blank')}
+                    >
                       Ver Detalles
                     </Button>
                   </td>
@@ -175,12 +176,6 @@ const ComparisonSection = () => {
               </tr>
             </tbody>
           </table>
-        </div>
-        
-        <div className="mt-8 text-center">
-          <Button variant="outline" className="gap-2">
-            <Settings className="h-4 w-4" /> Personalizar Comparación
-          </Button>
         </div>
       </div>
     </section>
