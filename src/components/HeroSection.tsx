@@ -4,9 +4,9 @@ import { ChevronDown, Search } from "lucide-react";
 
 const HeroSection = () => {
   const scrollToFinder = () => {
-    const element = document.getElementById('finder');
+    const element = document.getElementById('step-by-step-finder');
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
