@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Search } from "lucide-react";
 
@@ -63,11 +64,11 @@ const HeroSection = () => {
         </div>
         
         <div className="relative order-first md:order-last flex justify-center">
-          <div className="w-full max-w-lg relative animate-float">
+          <div className="w-full max-w-xl relative animate-float">
             <img 
               src="https://images.squarespace-cdn.com/content/v1/65441add9f1c47170e484373/98b53ed4-59ca-403f-a55f-93ef6cd315ac/bike.png?format=1000w" 
               alt="Motocicleta moderna"
-              className="h-full w-full object-contain" 
+              className="h-full w-full object-contain scale-110" 
             />
             <div className="absolute -bottom-6 -right-6 p-4 glass-card rounded-xl max-w-[200px]">
               <div className="text-xs text-muted-foreground">Compatibilidad</div>
