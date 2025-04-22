@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import LoadingBikeAnimation from "./LoadingBikeAnimation";
+import WelcomeScreen from "./finder/WelcomeScreen";
 
 interface ApiRequestData {
   "Marca"?: string;
@@ -83,6 +84,7 @@ const StepIndicator = ({ currentStep, totalSteps }: StepProps) => {
 
 const StepByStepFinder = () => {
   const { toast } = useToast();
+  const [showWelcome, setShowWelcome] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   
@@ -800,9 +802,13 @@ const StepByStepFinder = () => {
       </div>
     );
   };
-  
+
+  const startFinder = () => {
+    setShowWelcome(false);
+  };
+
   return (
-    <section id="finder" className="py-12">
+    <section id="step-by-step-finder" className="py-12">
       {loading && <LoadingBikeAnimation />}
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
@@ -811,56 +817,65 @@ const StepByStepFinder = () => {
               <span className="ubike-gradient">Buscador Inteligente</span> de Motos
             </h2>
             <p className="text-muted-foreground text-lg">
-              Responde algunas preguntas para ayudarnos a encontrar la motocicleta perfecta para ti.
+              {showWelcome ? 
+                "Te ayudamos a encontrar la moto perfecta para ti." :
+                "Responde algunas preguntas para ayudarnos a encontrar la motocicleta perfecta para ti."
+              }
             </p>
           </div>
           
           <div className="bg-card rounded-xl shadow-sm border p-6">
-            <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
-            
-            <div className="min-h-[400px]">
-              {currentStep === 1 && renderBasicInfoStep()}
-              {currentStep === 2 && renderUsageTypeStep()}
-              {currentStep === 3 && renderTransmissionStep()}
-              {currentStep === 4 && renderBrandStep()}
-              {hasExperience && currentStep === 5 && renderAdvancedSpecsStep()}
-              {((!hasExperience && currentStep === 5) || (hasExperience && currentStep === 6)) && renderSummaryStep()}
-            </div>
-            
-            <div className="flex justify-between mt-8">
-              <Button 
-                variant="outline" 
-                onClick={handleBack} 
-                disabled={currentStep === 1 || loading}
-              >
-                <ChevronLeft className="mr-1 h-4 w-4" />
-                Atrás
-              </Button>
-              
-              <Button 
-                onClick={handleNext}
-                disabled={loading}
-              >
-                {currentStep === totalSteps ? (
-                  loading ? (
-                    <>
-                      <span className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                      Buscando...
-                    </>
-                  ) : (
-                    <>
-                      <Search className="mr-1 h-4 w-4" />
-                      Buscar
-                    </>
-                  )
-                ) : (
-                  <>
-                    Siguiente
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </div>
+            {showWelcome ? (
+              <WelcomeScreen onStart={startFinder} />
+            ) : (
+              <>
+                <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
+                
+                <div className="min-h-[400px]">
+                  {currentStep === 1 && renderBasicInfoStep()}
+                  {currentStep === 2 && renderUsageTypeStep()}
+                  {currentStep === 3 && renderTransmissionStep()}
+                  {currentStep === 4 && renderBrandStep()}
+                  {hasExperience && currentStep === 5 && renderAdvancedSpecsStep()}
+                  {((!hasExperience && currentStep === 5) || (hasExperience && currentStep === 6)) && renderSummaryStep()}
+                </div>
+                
+                <div className="flex justify-between mt-8">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleBack} 
+                    disabled={currentStep === 1 || loading}
+                  >
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    Atrás
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleNext}
+                    disabled={loading}
+                  >
+                    {currentStep === totalSteps ? (
+                      loading ? (
+                        <>
+                          <span className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                          Buscando...
+                        </>
+                      ) : (
+                        <>
+                          <Search className="mr-1 h-4 w-4" />
+                          Buscar
+                        </>
+                      )
+                    ) : (
+                      <>
+                        Siguiente
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
