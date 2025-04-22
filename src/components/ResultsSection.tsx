@@ -1,5 +1,7 @@
+
 import { useState, useEffect } from "react";
 import BikeCard from "./BikeCard";
+import { toast } from "../hooks/use-toast";
 
 interface ApiResponse {
   status: string;
@@ -63,23 +65,58 @@ const ResultsSection = () => {
     const handleRecommendationsReceived = (event: CustomEvent<ApiResponse>) => {
       setLoading(true);
       try {
-        const { data, status } = event.detail;
+        console.log("Evento de recomendaciones recibido:", event.detail);
+        const { data, status, message } = event.detail;
         
-        if (status === "success" && data) {
+        if (status === "success" && data && data.length > 0) {
+          console.log("Datos de recomendaciones válidos:", data);
           const formattedBikes: FormattedBike[] = data.map((bike, index) => formatBikeData(bike, index));
+          console.log("Datos formateados:", formattedBikes);
           setRecommendations(formattedBikes);
           setError(null);
+          
+          // Notificar al usuario sobre las recomendaciones exitosas
+          toast({
+            title: "Recomendaciones listas",
+            description: `Se encontraron ${data.length} motocicletas que coinciden con tus criterios.`
+          });
         } else {
+          console.error("Error en datos:", status, message, data);
           setError("No se pudieron obtener recomendaciones. Intente con otros criterios.");
+          setRecommendations([]);
+          
+          // Notificar al usuario sobre el error
+          toast({
+            title: "Sin recomendaciones",
+            description: message || "Intenta con otros criterios de búsqueda.",
+            variant: "destructive"
+          });
         }
       } catch (err) {
+        console.error("Error al procesar recomendaciones:", err);
         setError("Error al procesar las recomendaciones.");
+        setRecommendations([]);
       } finally {
         setLoading(false);
       }
     };
 
+    // Añadir el event listener
     window.addEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
+
+    // Verificar si ya tenemos recomendaciones almacenadas en sessionStorage
+    const savedRecommendations = sessionStorage.getItem('motorcycleRecommendations');
+    if (savedRecommendations) {
+      try {
+        const parsedData = JSON.parse(savedRecommendations) as ApiResponse;
+        if (parsedData.status === "success" && parsedData.data && parsedData.data.length > 0) {
+          const formattedBikes = parsedData.data.map((bike, index) => formatBikeData(bike, index));
+          setRecommendations(formattedBikes);
+        }
+      } catch (err) {
+        console.error("Error al recuperar recomendaciones guardadas:", err);
+      }
+    }
 
     return () => {
       window.removeEventListener('motorcycleRecommendationsReceived' as any, handleRecommendationsReceived as EventListener);
@@ -91,28 +128,37 @@ const ResultsSection = () => {
     
     return {
       id: `${index}-${bike.Modelo}`,
-      name: bike.Modelo,
-      brand: bike.Marca,
-      price: bike.Precio,
+      name: bike.Modelo || "Modelo no disponible",
+      brand: bike.Marca || "Marca no disponible",
+      price: bike.Precio || 0,
       image: bike.Imagen || placeholderImage,
-      compatibility: Math.round(bike.similitud),
-      link: bike.Enlace,
-      description: bike.Descripción,
+      compatibility: Math.round(bike.similitud || 0),
+      link: bike.Enlace || "#",
+      description: bike.Descripción || "Descripción no disponible",
       specs: {
-        engine: `${bike["Cilindrada (CC)"]}cc`,
-        power: `${bike["Potencia (HP"]} CV`,
-        weight: `${bike.Peso} kg`,
-        engine_type: bike["Tipo de motor"],
-        transmission: bike["Tipo de transmisión"],
-        front_brake: bike["Freno delantero"],
-        rear_brake: bike["Freno trasero"],
-        front_suspension: bike["Suspensión delantera"],
-        rear_suspension: bike["Suspensión trasera"],
-        tank_capacity: `${bike["Capacidad del tanque"]} L`,
-        total_height: `${bike["Alto total"]} mm`,
-        bike_type: bike["Tipo de moto"]
+        engine: `${bike["Cilindrada (CC)"] || "N/A"}cc`,
+        power: `${bike["Potencia (HP)"] || "N/A"} CV`,
+        weight: `${bike.Peso || "N/A"} kg`,
+        engine_type: bike["Tipo de motor"] || "No especificado",
+        transmission: bike["Tipo de transmisión"] || "No especificado",
+        front_brake: bike["Freno delantero"] || "No especificado",
+        rear_brake: bike["Freno trasero"] || "No especificado",
+        front_suspension: bike["Suspensión delantera"] || "No especificado",
+        rear_suspension: bike["Suspensión trasera"] || "No especificado",
+        tank_capacity: `${bike["Capacidad del tanque"] || "N/A"} L`,
+        total_height: `${bike["Alto total"] || "N/A"} mm`,
+        bike_type: bike["Tipo de moto"] || "No especificado"
       }
     };
+  };
+
+  // Función para guardar las recomendaciones en sessionStorage cuando las recibimos
+  const saveRecommendationsToStorage = (response: ApiResponse) => {
+    try {
+      sessionStorage.setItem('motorcycleRecommendations', JSON.stringify(response));
+    } catch (err) {
+      console.error("Error al guardar recomendaciones:", err);
+    }
   };
 
   return (
@@ -147,7 +193,7 @@ const ResultsSection = () => {
                 <BikeCard key={bike.id} bike={bike} />
               ))
             ) : (
-              <div className="col-span-3 text-center p-8">
+              <div className="col-span-full text-center p-8">
                 <p className="text-muted-foreground">Sin recomendaciones. Intenta buscar usando los filtros.</p>
               </div>
             )}

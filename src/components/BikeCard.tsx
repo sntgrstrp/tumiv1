@@ -42,14 +42,23 @@ interface BikeCardProps {
 const BikeCard = ({ bike }: BikeCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
+  
+  // Manejo de error de imagen
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
+  };
+
+  // Formatear el precio con separador de miles
+  const formattedPrice = bike.price.toLocaleString('es-CO');
 
   return (
     <div className="glass-card rounded-xl overflow-hidden transition-all hover:translate-y-[-5px] group animate-fade-in relative">
       <div className="relative">
         <img 
           src={bike.image} 
-          alt={bike.name}
+          alt={`${bike.brand} ${bike.name}`}
           className="w-full aspect-[4/3] object-cover object-center transition-transform group-hover:scale-105" 
+          onError={handleImageError}
         />
         <div className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium flex items-center">
           <FuelIcon className="h-3 w-3 mr-1" />
@@ -73,7 +82,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
           </div>
           <div className="text-right">
             <p className="font-bold text-lg">
-              ${bike.price.toLocaleString('es-CO')}
+              ${formattedPrice}
             </p>
           </div>
         </div>
