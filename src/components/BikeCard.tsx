@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -43,7 +42,6 @@ const BikeCard = ({ bike }: BikeCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
   
-  // Function to get border color based on similarity
   const getBorderStyle = (similarity: number) => {
     if (similarity >= 70) {
       return "border-2 border-[#4ade80] shadow-[0_0_15px_rgba(74,222,128,0.5)] hover:shadow-[0_0_20px_rgba(74,222,128,0.6)]";
@@ -54,7 +52,6 @@ const BikeCard = ({ bike }: BikeCardProps) => {
     }
   };
 
-  // Function to enhance image resolution
   const getEnhancedImageUrl = (url: string) => {
     try {
       const baseUrl = url.split('?')[0];
@@ -65,13 +62,31 @@ const BikeCard = ({ bike }: BikeCardProps) => {
     }
   };
 
-  // Handle image error
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     console.log("Error al cargar imagen:", bike.image);
     e.currentTarget.src = "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
   };
 
   const formattedPrice = bike.price ? bike.price.toLocaleString('es-CO') : 'N/A';
+
+  const formatSpec = (value: string, type: 'power' | 'height' | 'engine') => {
+    if (!value) return 'N/A';
+    
+    if (type === 'power') {
+      return value.replace('CV', 'HP').replace('cv', 'HP');
+    }
+    if (type === 'height') {
+      if (value.includes('mm')) {
+        const numericValue = parseInt(value);
+        return `Alto total: ${(numericValue / 10).toFixed(1)} cm`;
+      }
+      return `Alto total: ${value}`;
+    }
+    if (type === 'engine') {
+      return value.replace('cc', 'CC').replace('cm3', 'CC');
+    }
+    return value;
+  };
 
   return (
     <div className={`glass-card rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-5px] group animate-fade-in relative ${getBorderStyle(bike.compatibility)}`}>
@@ -84,7 +99,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
         />
         <div className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium flex items-center">
           <FuelIcon className="h-3 w-3 mr-1" />
-          {bike.specs.engine}
+          {formatSpec(bike.specs.engine, 'engine')}
         </div>
         <div className="absolute bottom-3 left-3 bg-gradient-to-r from-ubike to-ubike-blue text-white px-3 py-1 rounded-full text-xs font-medium">
           {bike.compatibility}% Match
@@ -112,7 +127,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-ubike" />
-            <span>{bike.specs.power}</span>
+            <span>{formatSpec(bike.specs.power, 'power')}</span>
           </div>
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-ubike-blue" />
@@ -120,7 +135,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <Bike className="h-4 w-4 text-ubike-purple" />
-            <span>{bike.specs.total_height}</span>
+            <span>{formatSpec(bike.specs.total_height, 'height')}</span>
           </div>
         </div>
         
