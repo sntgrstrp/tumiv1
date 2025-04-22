@@ -1,4 +1,5 @@
 
+import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "./loading-spinner";
 
@@ -6,12 +7,14 @@ interface LoadingOverlayProps {
   message?: string;
   className?: string;
   fullScreen?: boolean;
+  error?: string;
 }
 
 const LoadingOverlay = ({ 
   message = "Cargando...", 
   className,
-  fullScreen = false 
+  fullScreen = false,
+  error
 }: LoadingOverlayProps) => {
   return (
     <div className={cn(
@@ -20,8 +23,22 @@ const LoadingOverlay = ({
       className
     )}>
       <div className="flex flex-col items-center space-y-4">
-        <LoadingSpinner size="lg" />
-        <p className="text-sm text-muted-foreground animate-pulse">{message}</p>
+        {error ? (
+          <>
+            <AlertTriangle className="h-8 w-8 text-destructive" />
+            <div className="text-center">
+              <p className="text-sm font-medium text-destructive">{error}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Por favor intenta nuevamente
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <LoadingSpinner size="lg" />
+            <p className="text-sm text-muted-foreground animate-pulse">{message}</p>
+          </>
+        )}
       </div>
     </div>
   );
