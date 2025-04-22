@@ -12,20 +12,22 @@ interface BikeCardProps {
     price: number;
     image: string;
     compatibility: number;
+    link: string;
+    description?: string;
     specs: {
       engine: string;
       power: string;
       weight: string;
       seat_height: string;
-      engine_type?: string;
-      transmission?: string;
-      front_brake?: string;
-      rear_brake?: string;
-      front_suspension?: string;
-      rear_suspension?: string;
-      tank_capacity?: string;
-      total_height?: string;
-      bike_type?: string;
+      engine_type: string;
+      transmission: string;
+      front_brake: string;
+      rear_brake: string;
+      front_suspension: string;
+      rear_suspension: string;
+      tank_capacity: string;
+      total_height: string;
+      bike_type: string;
     };
   };
 }
@@ -92,86 +94,79 @@ const BikeCard = ({ bike }: BikeCardProps) => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
             >
+              {bike.description && (
+                <div className="mb-4">
+                  <h4 className="font-medium mb-2">Descripción</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {bike.description}
+                  </p>
+                </div>
+              )}
+              
               <h4 className="font-medium mb-2">Especificaciones Técnicas</h4>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-muted-foreground mb-4">
-                {bike.specs.engine_type && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Motor: {bike.specs.engine_type}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Motor: {bike.specs.engine_type}</span>
+                </div>
                 
-                {bike.specs.transmission && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Transmisión: {bike.specs.transmission}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Transmisión: {bike.specs.transmission}</span>
+                </div>
                 
-                {bike.specs.front_brake && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Freno Del.: {bike.specs.front_brake}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Freno Del.: {bike.specs.front_brake}</span>
+                </div>
                 
-                {bike.specs.rear_brake && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Freno Tras.: {bike.specs.rear_brake}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Freno Tras.: {bike.specs.rear_brake}</span>
+                </div>
                 
-                {bike.specs.front_suspension && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Susp. Del.: {bike.specs.front_suspension}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Susp. Del.: {bike.specs.front_suspension}</span>
+                </div>
                 
-                {bike.specs.rear_suspension && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Susp. Tras.: {bike.specs.rear_suspension}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Susp. Tras.: {bike.specs.rear_suspension}</span>
+                </div>
                 
-                {bike.specs.tank_capacity && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Cap. Tanque: {bike.specs.tank_capacity}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Cap. Tanque: {bike.specs.tank_capacity}</span>
+                </div>
                 
-                {bike.specs.total_height && (
-                  <div className="flex items-start gap-2">
-                    <div className="min-w-4 mt-0.5">
-                      <Info className="h-3 w-3 text-ubike" />
-                    </div>
-                    <span>Alto Total: {bike.specs.total_height}</span>
+                <div className="flex items-start gap-2">
+                  <div className="min-w-4 mt-0.5">
+                    <Info className="h-3 w-3 text-ubike" />
                   </div>
-                )}
+                  <span>Alto Total: {bike.specs.total_height}</span>
+                </div>
               </div>
               
               <div className="flex justify-center">
                 <Button 
                   size="sm" 
                   className="bg-ubike hover:bg-ubike/90 text-white"
-                  onClick={() => window.open(`https://www.google.com/search?q=${bike.brand}+${bike.name}+caracteristicas`, '_blank')}
+                  onClick={() => window.open(bike.link, '_blank')}
                 >
                   Más Información
                 </Button>

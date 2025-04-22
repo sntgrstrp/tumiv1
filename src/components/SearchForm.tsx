@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,13 +50,6 @@ const SearchForm = () => {
   const [bikeWeight, setBikeWeight] = useState("");
   const [tankCapacity, setTankCapacity] = useState("");
   const [totalHeight, setTotalHeight] = useState("");
-
-  const tipoDeUsoMapeo = {
-    "Ciudad": ["Naked", "Scooter", "Urbana", "Automática", "Semiautomática"],
-    "Carretera": ["Deportiva", "Naked"],
-    "Todo Terreno": ["Todo Terreno", "Semiautomática"],
-    "Cualquiera": null
-  };
 
   const marcas = [
     "Cualquiera", "Victory", "AKT", "Yamaha", "Honda", "TVS", "Suzuki",
@@ -125,6 +119,12 @@ const SearchForm = () => {
       
       const data = await response.json();
       console.log("Respuesta API:", data);
+      
+      // Disparar evento con los resultados
+      const customEvent = new CustomEvent('motorcycleRecommendationsReceived', {
+        detail: data
+      });
+      window.dispatchEvent(customEvent);
       
       // Simular un pequeño retardo para mostrar la animación de carga
       setTimeout(() => {

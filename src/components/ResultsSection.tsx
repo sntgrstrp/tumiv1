@@ -18,6 +18,14 @@ interface BikeRecommendation {
   Peso: number;
   "Potencia (HP)": number;
   "Alto total": number;
+  "Capacidad del tanque": number;
+  "Tipo de motor": string;
+  "Tipo de transmisión": string;
+  "Suspensión delantera": string;
+  "Suspensión trasera": string;
+  "Freno delantero": string;
+  "Freno trasero": string;
+  Descripción: string;
   Imagen: string;
   Enlace: string;
 }
@@ -29,20 +37,22 @@ interface FormattedBike {
   price: number;
   image: string;
   compatibility: number;
+  link: string;
+  description: string;
   specs: {
     engine: string;
     power: string;
     weight: string;
-    seat_height: string; // Changed from optional to required
-    engine_type?: string;
-    transmission?: string;
-    front_brake?: string;
-    rear_brake?: string;
-    front_suspension?: string;
-    rear_suspension?: string;
-    tank_capacity?: string;
-    total_height?: string; // Changed from required to optional
-    bike_type?: string;    // Changed from required to optional
+    seat_height: string;
+    engine_type: string;
+    transmission: string;
+    front_brake: string;
+    rear_brake: string;
+    front_suspension: string;
+    rear_suspension: string;
+    tank_capacity: string;
+    total_height: string;
+    bike_type: string;
   }
 }
 
@@ -113,6 +123,9 @@ const ResultsSection = () => {
   }, []);
 
   const formatBikeData = (bike: BikeRecommendation, index: number): FormattedBike => {
+    // Default seat height since it's not in the API response
+    const defaultSeatHeight = "800 mm";
+    
     return {
       id: `${index}-${bike.Modelo}`,
       name: bike.Modelo,
@@ -120,90 +133,25 @@ const ResultsSection = () => {
       price: bike.Precio,
       image: bike.Imagen || "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
       compatibility: Math.round(bike.similitud),
+      link: bike.Enlace,
+      description: bike.Descripción,
       specs: {
         engine: `${bike["Cilindrada (CC)"]}cc`,
         power: `${bike["Potencia (HP)"]} CV`,
         weight: `${bike.Peso} kg`,
-        seat_height: "800 mm", // Added default value since it's required
+        seat_height: defaultSeatHeight,
+        engine_type: bike["Tipo de motor"],
+        transmission: bike["Tipo de transmisión"],
+        front_brake: bike["Freno delantero"],
+        rear_brake: bike["Freno trasero"],
+        front_suspension: bike["Suspensión delantera"],
+        rear_suspension: bike["Suspensión trasera"],
+        tank_capacity: `${bike["Capacidad del tanque"]} L`,
         total_height: `${bike["Alto total"]} mm`,
         bike_type: bike["Tipo de moto"]
       }
     };
   };
-
-  const sampleBikes = [
-    {
-      id: "1",
-      name: "MT-07",
-      brand: "Yamaha",
-      price: 35000000,
-      image: "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      compatibility: 98,
-      specs: {
-        engine: "689cc",
-        power: "73.4 CV",
-        weight: "184 kg",
-        seat_height: "805 mm",
-        engine_type: "4 Tiempos",
-        transmission: "Manual 6 velocidades",
-        front_brake: "Discos ABS",
-        rear_brake: "Disco ABS",
-        front_suspension: "Telescópica",
-        rear_suspension: "Monoamortiguador",
-        tank_capacity: "14 L",
-        total_height: "1,085 mm",
-        bike_type: "Naked"
-      }
-    },
-    {
-      id: "2",
-      name: "Z650",
-      brand: "Kawasaki",
-      price: 33500000,
-      image: "https://images.unsplash.com/photo-1549027032-1977ba8a1b15?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      compatibility: 94,
-      specs: {
-        engine: "649cc",
-        power: "68 CV",
-        weight: "187 kg",
-        seat_height: "790 mm",
-        engine_type: "4 Tiempos",
-        transmission: "Manual 6 velocidades",
-        front_brake: "Discos ABS",
-        rear_brake: "Disco",
-        front_suspension: "Telescópica",
-        rear_suspension: "Monoamortiguador",
-        tank_capacity: "15 L",
-        total_height: "1,065 mm",
-        bike_type: "Naked"
-      }
-    },
-    {
-      id: "3",
-      name: "CB650R",
-      brand: "Honda",
-      price: 42500000,
-      image: "https://images.unsplash.com/photo-1601989307097-7365eb41d031?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      compatibility: 92,
-      specs: {
-        engine: "649cc",
-        power: "95 CV",
-        weight: "202 kg",
-        seat_height: "810 mm",
-        engine_type: "4 Tiempos",
-        transmission: "Manual 6 velocidades",
-        front_brake: "Discos ABS",
-        rear_brake: "Disco ABS",
-        front_suspension: "Invertida",
-        rear_suspension: "Monoamortiguador",
-        tank_capacity: "15.4 L",
-        total_height: "1,075 mm",
-        bike_type: "Naked"
-      }
-    }
-  ];
-
-  const bikesToDisplay = recommendations.length > 0 ? recommendations : sampleBikes;
 
   return (
     <section id="results" className="py-16 relative">
@@ -232,9 +180,15 @@ const ResultsSection = () => {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {bikesToDisplay.map((bike) => (
-              <BikeCard key={bike.id} bike={bike} />
-            ))}
+            {recommendations.length > 0 ? (
+              recommendations.map((bike) => (
+                <BikeCard key={bike.id} bike={bike} />
+              ))
+            ) : (
+              <div className="col-span-3 text-center p-8">
+                <p className="text-muted-foreground">Sin recomendaciones. Intenta buscar usando los filtros.</p>
+              </div>
+            )}
           </div>
         )}
       </div>
