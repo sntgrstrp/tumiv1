@@ -1,28 +1,22 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Bike, Search, Menu, X } from "lucide-react";
-
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  return (
-    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "py-2 bg-background/90 backdrop-blur-md border-b border-white/10" : "py-4"}`}>
+  return <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "py-2 bg-background/90 backdrop-blur-md border-b border-white/10" : "py-4"}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bike className="h-8 w-8 text-ubike" />
-            <span className="text-xl font-bold ubike-gradient">uBikeAI</span>
+            <span className="text-xl font-bold ubike-gradient">TuMI</span>
           </div>
           
           {/* Desktop Navigation */}
@@ -44,18 +38,13 @@ const Navbar = () => {
           
           {/* Mobile Menu Button */}
           <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6 text-foreground" />
-            ) : (
-              <Menu className="h-6 w-6 text-foreground" />
-            )}
+            {mobileMenuOpen ? <X className="h-6 w-6 text-foreground" /> : <Menu className="h-6 w-6 text-foreground" />}
           </button>
         </div>
       </div>
       
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-b border-white/10 animate-fade-in">
+      {mobileMenuOpen && <div className="md:hidden absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-b border-white/10 animate-fade-in">
           <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col gap-4">
               <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={() => setMobileMenuOpen(false)}>
@@ -80,10 +69,7 @@ const Navbar = () => {
               </div>
             </nav>
           </div>
-        </div>
-      )}
-    </header>
-  );
+        </div>}
+    </header>;
 };
-
 export default Navbar;
