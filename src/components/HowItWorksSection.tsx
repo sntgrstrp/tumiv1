@@ -35,7 +35,7 @@ const HowItWorksSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="ubike-gradient">Cómo Funciona</span> uBikeAI
+            <span className="ubike-gradient">Cómo Funciona</span> TuMI
           </h2>
           <p className="text-muted-foreground">
             Un proceso simple y efectivo que utiliza inteligencia artificial para encontrar la motocicleta perfecta para ti, basado en tus características y preferencias.
