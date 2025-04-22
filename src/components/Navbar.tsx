@@ -1,9 +1,12 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Bike, Search, Menu, X } from "lucide-react";
+
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -11,6 +14,15 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMobileMenuOpen(false);
+  };
+  
   return <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "py-2 bg-background/90 backdrop-blur-md border-b border-white/10" : "py-4"}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -22,14 +34,23 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <a href="#" className="text-sm text-foreground/80 hover:text-ubike transition-colors">Inicio</a>
-            <a href="#how-it-works" className="text-sm text-foreground/80 hover:text-ubike transition-colors">Cómo Funciona</a>
-            <a href="#finder" className="text-sm text-foreground/80 hover:text-ubike transition-colors">Buscador</a>
-            <a href="#comparison" className="text-sm text-foreground/80 hover:text-ubike transition-colors">Comparador</a>
+            <a href="#" 
+               onClick={(e) => { e.preventDefault(); scrollToSection('how-it-works'); }} 
+               className="text-sm text-foreground/80 hover:text-ubike transition-colors">Cómo Funciona</a>
+            <a href="#" 
+               onClick={(e) => { e.preventDefault(); scrollToSection('finder'); }}
+               className="text-sm text-foreground/80 hover:text-ubike transition-colors">Buscador</a>
+            <a href="#" 
+               onClick={(e) => { e.preventDefault(); scrollToSection('comparison'); }}
+               className="text-sm text-foreground/80 hover:text-ubike transition-colors">Comparador</a>
           </nav>
           
           <div className="hidden md:flex items-center gap-4">
-            
-            <Button className="bg-ubike hover:bg-ubike/90 text-white" size="sm">
+            <Button 
+              className="bg-ubike hover:bg-ubike/90 text-white" 
+              size="sm"
+              onClick={() => scrollToSection('finder')}
+            >
               <Search className="h-4 w-4 mr-2" /> Buscar Moto
             </Button>
           </div>
@@ -45,23 +66,23 @@ const Navbar = () => {
       {mobileMenuOpen && <div className="md:hidden absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-b border-white/10 animate-fade-in">
           <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col gap-4">
-              <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection(''); }}>
                 Inicio
               </a>
-              <a href="#how-it-works" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('how-it-works'); }}>
                 Cómo Funciona
               </a>
-              <a href="#finder" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('finder'); }}>
                 Buscador
               </a>
-              <a href="#comparison" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#" className="text-foreground/80 hover:text-ubike py-2 transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('comparison'); }}>
                 Comparador
               </a>
               <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
                 <Button variant="outline" className="w-full justify-center">
                   Iniciar Sesión
                 </Button>
-                <Button className="w-full bg-ubike hover:bg-ubike/90 justify-center">
+                <Button className="w-full bg-ubike hover:bg-ubike/90 justify-center" onClick={() => scrollToSection('finder')}>
                   <Search className="h-4 w-4 mr-2" /> Buscar Moto
                 </Button>
               </div>
@@ -70,4 +91,5 @@ const Navbar = () => {
         </div>}
     </header>;
 };
+
 export default Navbar;
