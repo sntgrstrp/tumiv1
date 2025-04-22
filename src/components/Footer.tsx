@@ -1,8 +1,10 @@
 import { Bike, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+
 const Footer = () => {
-  return <footer className="py-12 border-t border-white/10">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+  return (
+    <footer className="py-12 border-t border-white/10">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="grid md:grid-cols-4 gap-8 justify-center items-start">
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Bike className="h-6 w-6 text-ubike" />
@@ -56,8 +58,6 @@ const Footer = () => {
             </ul>
           </div>
           
-          
-          
           <div>
             <h3 className="font-bold mb-4">Contacto</h3>
             <address className="not-italic text-muted-foreground">
@@ -72,6 +72,8 @@ const Footer = () => {
           <p>© {new Date().getFullYear()} TuMI. Todos los derechos reservados.</p>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;
