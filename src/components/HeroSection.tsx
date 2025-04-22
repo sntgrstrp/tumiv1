@@ -69,7 +69,7 @@ const HeroSection = () => {
               <div className="h-full w-full rounded-xl overflow-hidden">
                 <img 
                   //src="https://ideogram.ai/assets/image/lossless/response/vbm6Y75VTZKSvmFvqKA9Eg"
-                  src="https://w7.pngwing.com/pngs/57/594/png-transparent-suzuki-gsx-s1000-suzuki-gsx-series-motorcycle-sport-bike-suzuki-bike-exhaust-system-car-motorcycle.png" 
+                  src="https://images.squarespace-cdn.com/content/v1/65441add9f1c47170e484373/98b53ed4-59ca-403f-a55f-93ef6cd315ac/bike.png?format=1000w" 
                   alt="Motocicleta moderna"
                   className="h-full w-full object-cover" 
                 />
