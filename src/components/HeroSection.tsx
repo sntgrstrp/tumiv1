@@ -1,11 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Search } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const HeroSection = () => {
-  const isMobile = useIsMobile();
-  
   const scrollToFinder = () => {
     const element = document.getElementById('finder');
     if (element) {
@@ -22,8 +19,7 @@ const HeroSection = () => {
       </div>
       
       <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center py-16 md:py-32">
-        {/* Text Content - Set to display first on mobile */}
-        <div className="space-y-8 animate-fade-in order-2 md:order-1">
+        <div className="space-y-8 animate-fade-in">
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             <span className="ubike-gradient">Inteligencia Artificial</span>
             <br /> para encontrar tu 
@@ -51,7 +47,7 @@ const HeroSection = () => {
             </Button>
           </div>
           
-          <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-ubike"></div>
               IA Avanzada
@@ -67,8 +63,7 @@ const HeroSection = () => {
           </div>
         </div>
         
-        {/* Motorcycle Image - Set to display second on mobile */}
-        <div className="relative flex justify-center order-1 md:order-2">
+        <div className="relative order-first md:order-last flex justify-center">
           <div className="w-full max-w-xl relative animate-float">
             <img 
               src="https://images.squarespace-cdn.com/content/v1/65441add9f1c47170e484373/98b53ed4-59ca-403f-a55f-93ef6cd315ac/bike.png?format=1000w" 
