@@ -51,9 +51,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-ubike transition-colors">
-                  Blog
-                </a>
+                
               </li>
             </ul>
           </div>
