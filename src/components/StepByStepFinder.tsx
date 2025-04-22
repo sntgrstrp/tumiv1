@@ -190,11 +190,13 @@ const StepByStepFinder = () => {
         "Precio": budget
       };
       
+      /*
       // Convertir peso del usuario en peso sugerido de la moto (aprox. 120%)
       if (weight) {
         const dryWeightFromUser = weight * 1.2;
         requestData["Peso"] = Math.round(dryWeightFromUser);
       }
+        */
       
       /*
       // Add usage type if selected
@@ -256,7 +258,7 @@ const StepByStepFinder = () => {
           requestData["Suspensión trasera"] = mapSuspensionType(rearSuspension);
         }
         
-        if (bikeWeight) requestData["Peso"] = parseInt(bikeWeight);
+        //if (bikeWeight) requestData["Peso"] = parseInt(bikeWeight);
         if (tankCapacity) requestData["Capacidad del tanque"] = parseFloat(tankCapacity);
       }
       
