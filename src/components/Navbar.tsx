@@ -28,9 +28,7 @@ const Navbar = () => {
           </nav>
           
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="outline" size="sm" className="text-sm">
-              Iniciar Sesión
-            </Button>
+            
             <Button className="bg-ubike hover:bg-ubike/90 text-white" size="sm">
               <Search className="h-4 w-4 mr-2" /> Buscar Moto
             </Button>
