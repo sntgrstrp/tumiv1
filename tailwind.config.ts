@@ -1,5 +1,4 @@
-
-import type { Config } from "tailwindcss";
+import { type Config } from "tailwindcss";
 
 export default {
 	darkMode: ["class"],
@@ -130,6 +129,16 @@ export default {
 						transform: 'translateX(0)',
 						opacity: '1'
 					}
+				},
+				"bike-move": {
+					"0%": { transform: "translateX(-50%) translateY(0)" },
+					"50%": { transform: "translateX(50%) translateY(-10px)" },
+					"100%": { transform: "translateX(-50%) translateY(0)" }
+				},
+				"progress": {
+					"0%": { transform: "translateX(-100%)" },
+					"50%": { transform: "translateX(-10%)" },
+					"100%": { transform: "translateX(100%)" }
 				}
 			},
 			animation: {
@@ -138,7 +147,9 @@ export default {
 				'fade-in': 'fade-in 0.5s ease-out',
 				'float': 'float 6s ease-in-out infinite',
 				'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
-				'slide-in-right': 'slide-in-right 0.5s ease-out'
+				'slide-in-right': 'slide-in-right 0.5s ease-out',
+				"bike-move": "bike-move 3s ease-in-out infinite",
+				"progress": "progress 2s ease-in-out infinite"
 			}
 		}
 	},
