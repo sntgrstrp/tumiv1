@@ -69,18 +69,21 @@ const BikeCard = ({ bike }: BikeCardProps) => {
 
   const formattedPrice = bike.price ? bike.price.toLocaleString('es-CO') : 'N/A';
 
-  const formatSpec = (value: string, type: 'power' | 'height' | 'engine') => {
+  const formatSpec = (value: string, type: 'power' | 'height' | 'weight' | 'engine') => {
     if (!value) return 'N/A';
     
     if (type === 'power') {
-      return value.replace('CV', 'HP').replace('cv', 'HP');
+      return value.replace('CV', 'HP').replace('cv', 'HP').replace('HP', 'HP');
     }
     if (type === 'height') {
       if (value.includes('mm')) {
         const numericValue = parseInt(value);
-        return `Alto total: ${(numericValue / 10).toFixed(1)} cm`;
+        return `Alto total: ${(numericValue / 10).toFixed(1)} CM`;
       }
-      return `Alto total: ${value}`;
+      return `Alto total: ${value} CM`;
+    }
+    if (type === 'weight') {
+      return `Peso: ${value} KG`;
     }
     if (type === 'engine') {
       return value.replace('cc', 'CC').replace('cm3', 'CC');
@@ -131,7 +134,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-ubike-blue" />
-            <span>{bike.specs.weight}</span>
+            <span>{formatSpec(bike.specs.weight, 'weight')}</span>
           </div>
           <div className="flex items-center gap-2">
             <Bike className="h-4 w-4 text-ubike-purple" />
