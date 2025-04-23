@@ -99,7 +99,14 @@ const ResultsSection = () => {
     setRecommendations([]);
     setError(null);
     setLoading(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    
+    const stepByStepFinder = document.getElementById('step-by-step-finder');
+    if (stepByStepFinder) {
+      const resetEvent = new CustomEvent('resetStepByStepFinder');
+      window.dispatchEvent(resetEvent);
+      stepByStepFinder.scrollIntoView({ behavior: "smooth" });
+    }
+    
     toast({
       title: "¡Empecemos una nueva búsqueda!",
       description: "Puedes elegir nuevos criterios y obtener recomendaciones frescas.",

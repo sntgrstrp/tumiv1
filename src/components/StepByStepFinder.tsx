@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -806,6 +806,39 @@ const StepByStepFinder = () => {
   const startFinder = () => {
     setShowWelcome(false);
   };
+
+  const resetFinder = () => {
+    setShowWelcome(true);
+    setCurrentStep(1);
+    setLoading(false);
+    setHeight(170);
+    setWeight(70);
+    setBudget(6000000);
+    setSelectedUseType("");
+    setTransmissionType("");
+    setHasExperience(false);
+    setSelectedBrand("");
+    setEngineCC("");
+    setPower("");
+    setEngineType("");
+    setFrontSuspension("");
+    setRearSuspension("");
+    setFrontBrake("");
+    setRearBrake("");
+    setTankCapacity("");
+  };
+
+  useEffect(() => {
+    const handleReset = () => {
+      resetFinder();
+    };
+    
+    window.addEventListener('resetStepByStepFinder', handleReset);
+    
+    return () => {
+      window.removeEventListener('resetStepByStepFinder', handleReset);
+    };
+  }, []);
 
   return (
     <section id="step-by-step-finder" className="py-12">
