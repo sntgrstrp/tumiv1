@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Bike, Search, Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -67,6 +68,7 @@ const Navbar = () => {
             >
               <Search className="h-4 w-4 mr-2" /> Buscar Moto
             </Button>
+            <ThemeToggle />
           </div>
           
           {/* Mobile Menu Button */}
@@ -99,6 +101,9 @@ const Navbar = () => {
                 <Button className="w-full bg-ubike hover:bg-ubike/90 justify-center" onClick={() => scrollToSection('step-by-step-finder')}>
                   <Search className="h-4 w-4 mr-2" /> Buscar Moto
                 </Button>
+                <div className="w-full flex justify-center mt-2">
+                  <ThemeToggle />
+                </div>
               </div>
             </nav>
           </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import BikeCard from "./BikeCard";
 import { toast } from "../hooks/use-toast";
@@ -6,12 +5,13 @@ import { ApiResponse, FormattedBike } from "./results/BikeRecommendationTypes";
 import { formatBikeData } from "./results/BikeDataFormatter";
 import ResultsHeader from "./results/ResultsHeader";
 import ResultsLoadingState from "./results/ResultsLoadingState";
+import { Button } from "@/components/ui/button";
 
 const ResultsSection = () => {
   const [recommendations, setRecommendations] = useState<FormattedBike[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const handleApiResponse = (response: ApiResponse) => {
     console.log("Processing API response:", response);
     try {
@@ -94,6 +94,18 @@ const ResultsSection = () => {
     }
   };
 
+  const handleNewSearch = () => {
+    sessionStorage.removeItem("motorcycleRecommendations");
+    setRecommendations([]);
+    setError(null);
+    setLoading(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast({
+      title: "¡Empecemos una nueva búsqueda!",
+      description: "Puedes elegir nuevos criterios y obtener recomendaciones frescas.",
+    });
+  };
+
   return (
     <section id="results" className="py-16 relative">
       <div className="absolute inset-0 -z-10">
@@ -114,18 +126,32 @@ const ResultsSection = () => {
             <p className="mt-2 text-sm text-muted-foreground">
               Por favor intenta con diferentes criterios de búsqueda.
             </p>
+            <div className="mt-6 flex justify-center">
+              <Button variant="outline" onClick={handleNewSearch}>
+                Nueva Búsqueda
+              </Button>
+            </div>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recommendations && recommendations.length > 0 ? (
-              recommendations.map((bike) => (
-                <BikeCard key={bike.id} bike={bike} />
-              ))
-            ) : (
-              <div className="col-span-full text-center p-8">
-                <p className="text-muted-foreground">
-                  Sin recomendaciones. Intenta buscar usando los filtros.
-                </p>
+          <div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recommendations && recommendations.length > 0 ? (
+                recommendations.map((bike) => (
+                  <BikeCard key={bike.id} bike={bike} />
+                ))
+              ) : (
+                <div className="col-span-full text-center p-8">
+                  <p className="text-muted-foreground">
+                    Sin recomendaciones. Intenta buscar usando los filtros.
+                  </p>
+                </div>
+              )}
+            </div>
+            {recommendations && recommendations.length > 0 && (
+              <div className="flex justify-center mt-10">
+                <Button variant="outline" size="lg" onClick={handleNewSearch}>
+                  Nueva Búsqueda
+                </Button>
               </div>
             )}
           </div>
